@@ -96,7 +96,9 @@ actor HAService {
             }
         }
 
-        throw lastError
+        // If all endpoints fail, return empty list (user can still create new alarms)
+        // This is a fallback for HA versions with different API structures
+        return []
     }
 
     func createAlarm(_ alarm: Alarm) async throws -> Alarm {
