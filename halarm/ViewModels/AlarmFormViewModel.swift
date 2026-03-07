@@ -5,7 +5,7 @@ final class AlarmFormViewModel {
     var label: String = ""
     var hour: Int = 7
     var minute: Int = 0
-    var weekdays: Set<Weekday> = [.mon, .tue, .wed, .thu, .fri]
+    var weekdays: Set<Weekday> = []
     var selectedDevice: CoverEntity?
     var position: Int = 100
 
@@ -43,6 +43,11 @@ final class AlarmFormViewModel {
         do {
             availableDevices = try await haService.fetchCoverEntities()
             errorMessage = nil
+
+            // Pre-select the last used device if available
+            if selectedDevice == nil, let lastDeviceId = SettingsStore.shared.lastDeviceId {
+                selectedDevice = availableDevices.first(where: { $0.id == lastDeviceId })
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -52,6 +57,10 @@ final class AlarmFormViewModel {
         guard let haService, let device = selectedDevice else {
             throw NSError(domain: "AlarmForm", code: -1, userInfo: [NSLocalizedDescriptionKey: "Device not selected"])
         }
+
+        // Save this device as the last used
+        SettingsStore.shared.lastDeviceId = device.id
+        SettingsStore.shared.lastDeviceName = device.name
 
         let alarm = Alarm(
             id: existingAlarm?.id ?? UUID().uuidString,

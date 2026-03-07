@@ -39,10 +39,11 @@ final class AlarmListViewModel {
     }
 
     func toggleAlarm(id: String, enabled: Bool) async {
-        guard let haService else { return }
+        guard let haService,
+              let alarm = alarms.first(where: { $0.id == id }) else { return }
 
         do {
-            try await haService.setEnabled(id: id, enabled: enabled)
+            try await haService.setEnabled(id: id, label: alarm.label, enabled: enabled)
             if let index = alarms.firstIndex(where: { $0.id == id }) {
                 alarms[index].isEnabled = enabled
             }

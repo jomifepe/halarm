@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import yaml
 
@@ -9,7 +10,7 @@ from homeassistant.components.http import HomeAssistantView
 
 
 class HAlarmAutomationsView(HomeAssistantView):
-    """Return all automations whose alias starts with 'halarm_'."""
+    """Return all automations whose description contains halarm metadata."""
 
     url = "/api/halarm/automations"
     name = "api:halarm:automations"
@@ -21,7 +22,6 @@ class HAlarmAutomationsView(HomeAssistantView):
         automations_path = os.path.join(config_dir, "automations.yaml")
 
         try:
-            # Use asyncio.to_thread to avoid blocking the event loop
             automations = await asyncio.to_thread(self._read_automations, automations_path)
         except FileNotFoundError:
             return self.json([])
@@ -29,9 +29,10 @@ class HAlarmAutomationsView(HomeAssistantView):
         if not isinstance(automations, list):
             return self.json([])
 
+        # Filter for automations with halarm metadata in description
         halarm = [
             a for a in automations
-            if isinstance(a, dict) and a.get("alias", "").startswith("halarm_")
+            if isinstance(a, dict) and self._is_halarm_automation(a)
         ]
         return self.json(halarm)
 
@@ -40,3 +41,20 @@ class HAlarmAutomationsView(HomeAssistantView):
         """Read automations from YAML file (blocking operation)."""
         with open(automations_path, encoding="utf-8") as f:
             return yaml.safe_load(f) or []
+
+    @staticmethod
+    def _is_halarm_automation(automation: dict) -> bool:
+        """Check if automation has halarm metadata in description."""
+        description = automation.get("description", "")
+        if not description:
+            return False
+        try:
+            # Clean up the description (remove extra whitespace/newlines)
+            clean_description = description.replace('\n', '').strip()
+            data = json.loads(clean_description)
+            # Valid halarm metadata has 'label', 'deviceId', and 'position'
+            return isinstance(data, dict) and all(
+                key in data for key in ["label", "deviceId", "position"]
+            )
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            return False

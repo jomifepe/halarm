@@ -56,7 +56,8 @@ struct AlarmListView: View {
                     }
                     .onDelete { indexSet in
                         Task {
-                            for index in indexSet {
+                            // Delete in reverse order to avoid index shifting
+                            for index in indexSet.sorted(by: >) {
                                 let alarm = viewModel.alarms[index]
                                 await viewModel.deleteAlarm(id: alarm.id)
                             }
@@ -90,6 +91,18 @@ struct AlarmListView: View {
             }
             .sheet(isPresented: $showingSettings) {
                 SettingsView(viewModel: SettingsViewModel(settingsStore: SettingsStore.shared))
+            }
+            .sheet(item: $selectedAlarmForEdit) { alarm in
+                let formVM = AlarmFormViewModel()
+                return AlarmFormView(viewModel: formVM, haService: haService)
+                    .onAppear {
+                        formVM.setupForEdit(alarm)
+                    }
+                    .onDisappear {
+                        Task {
+                            await viewModel.loadAlarms()
+                        }
+                    }
             }
             .task {
                 await viewModel.loadAlarms()

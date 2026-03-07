@@ -59,6 +59,16 @@ struct AlarmFormView: View {
                     }
 
                     Slider(value: positionBinding, in: 0...100, step: 1)
+
+                    HStack(spacing: 0) {
+                        Text("0% = Closed")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("100% = Open")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 if let error = viewModel.errorMessage {
@@ -99,6 +109,8 @@ struct AlarmFormView: View {
                 if let service = haService {
                     viewModel.setupService(service)
                     devicePickerVM.setupService(service)
+                    await viewModel.loadDevices()
+                    await devicePickerVM.loadDevices()
                 }
             }
         }

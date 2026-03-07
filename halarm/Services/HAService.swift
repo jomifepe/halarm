@@ -137,7 +137,7 @@ actor HAService {
         }
     }
 
-    func setEnabled(id: String, enabled: Bool) async throws {
+    func setEnabled(id: String, label: String, enabled: Bool) async throws {
         let service = enabled ? "turn_on" : "turn_off"
         let url = URL(string: baseURL + "/api/services/automation/\(service)")!
         var request = URLRequest(url: url)
@@ -145,7 +145,9 @@ actor HAService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let payload = ["entity_id": "automation.\(id)"]
+        // Construct entity_id from label (convert to lowercase, replace spaces with underscores)
+        let entityId = "automation." + label.lowercased().replacingOccurrences(of: " ", with: "_")
+        let payload = ["entity_id": entityId]
         request.httpBody = try JSONEncoder().encode(payload)
 
         let (_, response) = try await session.data(for: request)

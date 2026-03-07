@@ -15,7 +15,9 @@ enum AutomationMapper {
             .map { $0.rawValue }
 
         // Create condition for weekdays
-        let conditions: [HACondition]? = alarm.weekdays.count == 7 ? [] : [
+        // No condition if all days (7) or no days (0) selected
+        // If no days: runs once and is deleted; if all days: runs daily
+        let conditions: [HACondition]? = (alarm.weekdays.count == 0 || alarm.weekdays.count == 7) ? [] : [
             HACondition(
                 condition: "time",
                 weekday: weekdayValues
@@ -53,7 +55,9 @@ enum AutomationMapper {
     }
 
     static func toAlarm(from automation: HAAutomation) -> Alarm? {
-        guard let alias = automation.alias, alias.hasPrefix("halarm_") else {
+        // Since automations come from /api/halarm/automations endpoint,
+        // they're already filtered to be halarm automations. Just verify the alias exists.
+        guard automation.alias != nil else {
             return nil
         }
 
@@ -90,7 +94,7 @@ enum AutomationMapper {
         }
 
         // Parse metadata from description (stored as JSON)
-        var label = alias
+        var label = automation.alias ?? ""
         var deviceId = entityId
         if let description = automation.description,
            !description.isEmpty,
