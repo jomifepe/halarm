@@ -94,17 +94,15 @@ actor HAService {
         let automation = AutomationMapper.toHA(from: alarm)
         request.httpBody = try JSONEncoder().encode(automation)
 
-        let (data, response) = try await session.data(for: request)
+        let (_, response) = try await session.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse, (200...201).contains(httpResponse.statusCode) else {
             throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
         }
 
-        let created = try JSONDecoder().decode(HAAutomation.self, from: data)
-        guard let mapped = AutomationMapper.toAlarm(from: created) else {
-            throw HAError.decodingError
-        }
-        return mapped
+        // Home Assistant doesn't return the created automation in the response,
+        // so we just return the alarm we created
+        return alarm
     }
 
     func updateAlarm(_ alarm: Alarm) async throws {
