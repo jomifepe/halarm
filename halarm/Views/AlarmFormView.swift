@@ -58,10 +58,7 @@ struct AlarmFormView: View {
                             .foregroundColor(.secondary)
                     }
 
-                    Slider(value: Double($viewModel.position).wrappedValue, in: 0...100, step: 1)
-                        .onChange(of: $viewModel.position) { oldValue, newValue in
-                            viewModel.position = Int(newValue)
-                        }
+                    Slider(value: positionBinding, in: 0...100, step: 1)
                 }
 
                 if let error = viewModel.errorMessage {
@@ -120,6 +117,13 @@ struct AlarmFormView: View {
                 viewModel.hour = components.hour ?? 0
                 viewModel.minute = components.minute ?? 0
             }
+        )
+    }
+
+    private var positionBinding: Binding<Double> {
+        Binding(
+            get: { Double(viewModel.position) },
+            set: { viewModel.position = Int($0) }
         )
     }
 }
