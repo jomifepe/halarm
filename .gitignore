@@ -1,0 +1,41 @@
+# Environment variables with credentials
+.env
+.env.local
+.env.*.local
+
+# Xcode build artifacts
+build/
+DerivedData/
+*.xcarchive
+
+# Xcode user-specific files
+*.xcworkspace/xcuserdata/
+*.playground/xcuserdata/
+xcuserdata/
+*.xcuserdatad/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS temp files
+.Spotlight-V100
+.Trashes
+.TemporaryItems

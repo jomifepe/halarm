@@ -60,8 +60,8 @@ actor HAService {
     // MARK: - Alarms (HA Automations)
 
     func fetchAlarms() async throws -> [Alarm] {
-        // Use the correct endpoint for fetching all automations
-        let url = URL(string: baseURL + "/api/config/automation/config")!
+        // Fetch all halarm automations from the custom HA integration endpoint
+        let url = URL(string: baseURL + "/api/halarm/automations")!
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
@@ -71,16 +71,18 @@ actor HAService {
             throw HAError.invalidResponse
         }
 
-        if httpResponse.statusCode == 200 {
-            let automations = try JSONDecoder().decode([HAAutomation].self, from: data)
-            return automations
-                .filter { $0.alias?.hasPrefix("halarm_") ?? false }
-                .compactMap { automation in
-                    AutomationMapper.toAlarm(from: automation)
-                }
-        } else {
+        if httpResponse.statusCode == 404 {
+            throw HAError.pluginNotInstalled
+        }
+
+        guard httpResponse.statusCode == 200 else {
             throw HAError.httpError(httpResponse.statusCode)
         }
+
+        let automations = try JSONDecoder().decode([HAAutomation].self, from: data)
+        return automations
+            .compactMap { AutomationMapper.toAlarm(from: $0) }
+            .sorted { $0.label < $1.label }
     }
 
     func createAlarm(_ alarm: Alarm) async throws -> Alarm {
@@ -248,6 +250,7 @@ enum HAError: LocalizedError {
     case httpError(Int)
     case decodingError
     case networkError(Error)
+    case pluginNotInstalled
 
     var errorDescription: String? {
         switch self {
@@ -261,6 +264,8 @@ enum HAError: LocalizedError {
             return "Failed to decode response"
         case .networkError(let error):
             return error.localizedDescription
+        case .pluginNotInstalled:
+            return "HAlarm plugin not installed. Copy ha_integration/custom_components/halarm/ to your HA config directory and add 'halarm:' to configuration.yaml, then restart HA."
         }
     }
 }

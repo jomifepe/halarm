@@ -29,10 +29,19 @@ enum AutomationMapper {
             data: HAData(position: alarm.position)
         )
 
+        // Store alarm metadata in description as JSON for fetch/reconstruct
+        let metadata: [String: Any] = [
+            "label": alarm.label,
+            "deviceId": alarm.device.id,
+            "position": alarm.position
+        ]
+        let description = (try? JSONSerialization.data(withJSONObject: metadata))
+            .flatMap { String(data: $0, encoding: .utf8) } ?? ""
+
         return HAAutomation(
             id: automationId,
             alias: "halarm_\(automationId)",
-            description: "",
+            description: description,
             triggers: [trigger],  // Changed from "trigger"
             conditions: conditions,  // Changed from "condition"
             actions: [action],  // Changed from "action"
@@ -77,14 +86,29 @@ enum AutomationMapper {
             return nil
         }
 
+        // Parse metadata from description (stored as JSON)
+        var label = alias
+        var deviceId = entityId
+        if let description = automation.description,
+           !description.isEmpty,
+           let data = description.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let metadataLabel = json["label"] as? String {
+                label = metadataLabel
+            }
+            if let metadataDeviceId = json["deviceId"] as? String {
+                deviceId = metadataDeviceId
+            }
+        }
+
         return Alarm(
             id: automation.id,
-            label: alias,
+            label: label,
             hour: hour,
             minute: minute,
             weekdays: weekdays,
             isEnabled: true,  // HA 2026.2.2 doesn't use "enabled" field
-            device: CoverEntity(id: entityId, name: entityId),
+            device: CoverEntity(id: deviceId, name: deviceId),
             position: position
         )
     }
