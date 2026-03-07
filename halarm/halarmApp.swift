@@ -5,6 +5,7 @@ struct halarmApp: App {
     @State private var settingsStore = SettingsStore.shared
     @State private var haService: HAService?
     @State private var alarmListViewModel = AlarmListViewModel()
+    @State private var refreshTrigger = false
 
     var body: some Scene {
         WindowGroup {
@@ -27,6 +28,12 @@ struct halarmApp: App {
                         }
                     }
             }
+        }
+        .onChange(of: settingsStore.baseURL) { _ in
+            refreshTrigger.toggle()
+        }
+        .onChange(of: settingsStore.token) { _ in
+            refreshTrigger.toggle()
         }
     }
 }
