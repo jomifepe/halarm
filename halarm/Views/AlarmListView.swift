@@ -64,17 +64,18 @@ struct AlarmListView: View {
                     }
                 }
             }
+            .refreshable {
+                await viewModel.loadAlarms()
+            }
             .navigationTitle("Alarms")
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: { showingNewAlarmForm = true }) {
                         Image(systemName: "plus")
                     }
-                }
 
-                ToolbarItem(placement: .secondaryAction) {
-                    Button(action: { showingSettings = true }) {
-                        Image(systemName: "gear")
+                    Button("Settings", systemImage: "ellipsis") {
+                        showingSettings = true
                     }
                 }
             }

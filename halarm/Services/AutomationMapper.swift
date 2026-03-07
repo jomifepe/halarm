@@ -38,9 +38,12 @@ enum AutomationMapper {
         let description = (try? JSONSerialization.data(withJSONObject: metadata))
             .flatMap { String(data: $0, encoding: .utf8) } ?? ""
 
+        // Use the label as the alias if provided, otherwise use the halarm ID
+        let alias = alarm.label.isEmpty ? "halarm_\(automationId)" : alarm.label
+
         return HAAutomation(
             id: automationId,
-            alias: "halarm_\(automationId)",
+            alias: alias,
             description: description,
             triggers: [trigger],  // Changed from "trigger"
             conditions: conditions,  // Changed from "condition"

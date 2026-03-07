@@ -1,6 +1,7 @@
 """REST API view exposing halarm automations."""
 from __future__ import annotations
 
+import asyncio
 import os
 import yaml
 
@@ -20,8 +21,8 @@ class HAlarmAutomationsView(HomeAssistantView):
         automations_path = os.path.join(config_dir, "automations.yaml")
 
         try:
-            with open(automations_path, encoding="utf-8") as f:
-                automations = yaml.safe_load(f) or []
+            # Use asyncio.to_thread to avoid blocking the event loop
+            automations = await asyncio.to_thread(self._read_automations, automations_path)
         except FileNotFoundError:
             return self.json([])
 
@@ -33,3 +34,9 @@ class HAlarmAutomationsView(HomeAssistantView):
             if isinstance(a, dict) and a.get("alias", "").startswith("halarm_")
         ]
         return self.json(halarm)
+
+    @staticmethod
+    def _read_automations(automations_path: str):
+        """Read automations from YAML file (blocking operation)."""
+        with open(automations_path, encoding="utf-8") as f:
+            return yaml.safe_load(f) or []

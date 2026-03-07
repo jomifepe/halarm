@@ -8,7 +8,7 @@ struct WeekdayPickerView: View {
             Text("Days")
                 .font(.headline)
 
-            HStack(spacing: 8) {
+            HStack(spacing: 6) {
                 ForEach(Weekday.allCases, id: \.self) { day in
                     Button(action: {
                         if selectedWeekdays.contains(day) {
@@ -18,13 +18,15 @@ struct WeekdayPickerView: View {
                         }
                     }) {
                         Text(day.displayName)
-                            .font(.caption)
+                            .font(.caption2)
+                            .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
-                            .padding(8)
-                            .background(selectedWeekdays.contains(day) ? Color.blue : Color(.systemGray5))
+                            .frame(height: 36)
+                            .background(selectedWeekdays.contains(day) ? Color.blue : Color(.systemGray4))
                             .foregroundColor(selectedWeekdays.contains(day) ? .white : .primary)
                             .cornerRadius(6)
                     }
+                    .buttonStyle(.plain)
                 }
             }
         }
