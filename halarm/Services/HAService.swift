@@ -60,22 +60,43 @@ actor HAService {
     // MARK: - Alarms (HA Automations)
 
     func fetchAlarms() async throws -> [Alarm] {
-        let url = URL(string: baseURL + "/api/config/automation/config")!
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        // Try the newer API endpoint first
+        let endpoints = [
+            "/api/automation",
+            "/api/automations",
+            "/api/config/automation/config"
+        ]
 
-        let (data, response) = try await session.data(for: request)
+        var lastError: HAError = HAError.httpError(404)
 
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
+        for endpoint in endpoints {
+            let url = URL(string: baseURL + endpoint)!
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+            do {
+                let (data, response) = try await session.data(for: request)
+
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw HAError.invalidResponse
+                }
+
+                if httpResponse.statusCode == 200 {
+                    let automations = try JSONDecoder().decode([HAAutomation].self, from: data)
+                    return automations
+                        .filter { $0.alias?.hasPrefix("halarm_") ?? false }
+                        .compactMap { automation in
+                            AutomationMapper.toAlarm(from: automation)
+                        }
+                }
+                lastError = HAError.httpError(httpResponse.statusCode)
+            } catch {
+                lastError = HAError.decodingError
+                continue
+            }
         }
 
-        let automations = try JSONDecoder().decode([HAAutomation].self, from: data)
-        return automations
-            .filter { $0.alias?.hasPrefix("halarm_") ?? false }
-            .compactMap { automation in
-                AutomationMapper.toAlarm(from: automation)
-            }
+        throw lastError
     }
 
     func createAlarm(_ alarm: Alarm) async throws -> Alarm {
