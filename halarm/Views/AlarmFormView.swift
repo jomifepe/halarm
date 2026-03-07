@@ -4,6 +4,7 @@ struct AlarmFormView: View {
     @State var viewModel: AlarmFormViewModel
     @Environment(\.dismiss) var dismiss
     @State private var isSaving = false
+    @State private var devicePickerVM = DevicePickerViewModel()
 
     private let haService: HAService?
 
@@ -31,16 +32,12 @@ struct AlarmFormView: View {
                 }
 
                 Section("Blind Settings") {
-                    NavigationLink(destination: {
-                        let devicePickerVM = DevicePickerViewModel()
-                        if let service = haService {
-                            devicePickerVM.setupService(service)
-                        }
-                        return DevicePickerView(viewModel: devicePickerVM, selectedDevice: $viewModel.selectedDevice)
+                    NavigationLink(destination:
+                        DevicePickerView(viewModel: devicePickerVM, selectedDevice: $viewModel.selectedDevice)
                             .task {
                                 await devicePickerVM.loadDevices()
                             }
-                    }) {
+                    ) {
                         HStack {
                             Text("Device")
                             Spacer()
@@ -104,6 +101,7 @@ struct AlarmFormView: View {
             .task {
                 if let service = haService {
                     viewModel.setupService(service)
+                    devicePickerVM.setupService(service)
                 }
             }
         }
