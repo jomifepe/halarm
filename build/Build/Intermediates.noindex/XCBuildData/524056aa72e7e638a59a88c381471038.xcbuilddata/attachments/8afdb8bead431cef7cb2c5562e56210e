@@ -1,0 +1,17 @@
+/Users/jmfp/dev/misc/halarm/halarm/Models/Alarm.swift
+/Users/jmfp/dev/misc/halarm/halarm/Models/CoverEntity.swift
+/Users/jmfp/dev/misc/halarm/halarm/Models/Weekday.swift
+/Users/jmfp/dev/misc/halarm/halarm/Services/AutomationMapper.swift
+/Users/jmfp/dev/misc/halarm/halarm/Services/HAService.swift
+/Users/jmfp/dev/misc/halarm/halarm/Services/SettingsStore.swift
+/Users/jmfp/dev/misc/halarm/halarm/ViewModels/AlarmFormViewModel.swift
+/Users/jmfp/dev/misc/halarm/halarm/ViewModels/AlarmListViewModel.swift
+/Users/jmfp/dev/misc/halarm/halarm/ViewModels/DevicePickerViewModel.swift
+/Users/jmfp/dev/misc/halarm/halarm/ViewModels/SettingsViewModel.swift
+/Users/jmfp/dev/misc/halarm/halarm/Views/AlarmFormView.swift
+/Users/jmfp/dev/misc/halarm/halarm/Views/AlarmListView.swift
+/Users/jmfp/dev/misc/halarm/halarm/Views/DevicePickerView.swift
+/Users/jmfp/dev/misc/halarm/halarm/Views/SettingsView.swift
+/Users/jmfp/dev/misc/halarm/halarm/Views/WeekdayPickerView.swift
+/Users/jmfp/dev/misc/halarm/halarm/halarmApp.swift
+/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/DerivedSources/GeneratedAssetSymbols.swift

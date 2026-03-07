@@ -171,26 +171,36 @@ struct HAAttributes: Codable {
 struct HAAutomation: Codable {
     let id: String
     let alias: String?
-    let unique_id: String?
-    let trigger: [HATrigger]?
-    let condition: [HACondition]?
-    let action: [HAAction]?
-    let enabled: Bool?
+    let description: String?
+    let triggers: [HATrigger]?
+    let conditions: [HACondition]?
+    let actions: [HAAction]?
     let mode: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, alias, description, triggers, conditions, actions, mode
+    }
 }
 
 struct HATrigger: Codable {
-    let platform: String
-    let at: String?
+    let trigger: String  // "time", "state", etc.
+    let at: String?      // time in HH:MM:SS format
+
+    // For flexible decoding of additional fields
+    var dynamicFields: [String: AnyCodable] = [:]
+
+    enum CodingKeys: String, CodingKey {
+        case trigger, at
+    }
 }
 
 struct HACondition: Codable {
-    let condition: String
+    let condition: String?
     let weekday: [String]?
 }
 
 struct HAAction: Codable {
-    let service: String
+    let action: String   // e.g., "cover.set_cover_position"
     let target: HATarget?
     let data: HAData?
 }
@@ -201,6 +211,35 @@ struct HATarget: Codable {
 
 struct HAData: Codable {
     let position: Int?
+}
+
+// Helper for decoding unknown fields
+struct AnyCodable: Codable {
+    let value: Any
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let intVal = try? container.decode(Int.self) {
+            value = intVal
+        } else if let stringVal = try? container.decode(String.self) {
+            value = stringVal
+        } else if let boolVal = try? container.decode(Bool.self) {
+            value = boolVal
+        } else {
+            value = NSNull()
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        if let intVal = value as? Int {
+            try container.encode(intVal)
+        } else if let stringVal = value as? String {
+            try container.encode(stringVal)
+        } else if let boolVal = value as? Bool {
+            try container.encode(boolVal)
+        }
+    }
 }
 
 // MARK: - Errors

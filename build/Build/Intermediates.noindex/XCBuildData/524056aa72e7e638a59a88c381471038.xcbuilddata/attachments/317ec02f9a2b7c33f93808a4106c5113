@@ -1,0 +1,179 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarm-primary.dia",
+    "emit-module-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarm-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarm-primary-emit-module.dia",
+    "pch" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarm-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarm-primary.swiftdeps"
+  },
+  "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Models/Alarm.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Alarm~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Models/CoverEntity.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/CoverEntity~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Models/Weekday.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/Weekday~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Services/AutomationMapper.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AutomationMapper~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Services/HAService.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/HAService~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Services/SettingsStore.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsStore~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/ViewModels/AlarmFormViewModel.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormViewModel~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/ViewModels/AlarmListViewModel.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListViewModel~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/ViewModels/DevicePickerViewModel.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerViewModel~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/ViewModels/SettingsViewModel.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsViewModel~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Views/AlarmFormView.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmFormView~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Views/AlarmListView.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/AlarmListView~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Views/DevicePickerView.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/DevicePickerView~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Views/SettingsView.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/Views/WeekdayPickerView.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/WeekdayPickerView~partial.swiftmodule"
+  },
+  "/Users/jmfp/dev/misc/halarm/halarm/halarmApp.swift" : {
+    "const-values" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.swiftconstvalues",
+    "dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.d",
+    "diagnostics" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.dia",
+    "index-unit-output-path" : "/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.o",
+    "llvm-bc" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.bc",
+    "object" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.o",
+    "swift-dependencies" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp.swiftdeps",
+    "swiftmodule" : "/Users/jmfp/dev/misc/halarm/build/Build/Intermediates.noindex/halarm.build/Debug-iphonesimulator/halarm.build/Objects-normal/arm64/halarmApp~partial.swiftmodule"
+  }
+}

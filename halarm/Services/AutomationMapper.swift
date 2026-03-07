@@ -4,8 +4,9 @@ enum AutomationMapper {
     static func toHA(from alarm: Alarm) -> HAAutomation {
         let automationId = alarm.id.replacingOccurrences(of: "halarm_", with: "")
 
+        // Create trigger in the new format (HA 2026.2.2)
         let trigger = HATrigger(
-            platform: "time",
+            trigger: "time",  // Changed from "platform"
             at: String(format: "%02d:%02d:00", alarm.hour, alarm.minute)
         )
 
@@ -13,13 +14,17 @@ enum AutomationMapper {
             .sorted { $0.rawValue < $1.rawValue }
             .map { $0.rawValue }
 
-        let condition = HACondition(
-            condition: "time",
-            weekday: weekdayValues.isEmpty ? nil : weekdayValues
-        )
+        // Create condition for weekdays
+        let conditions: [HACondition]? = alarm.weekdays.count == 7 ? [] : [
+            HACondition(
+                condition: "time",
+                weekday: weekdayValues
+            )
+        ]
 
+        // Create action in the new format
         let action = HAAction(
-            service: "cover.set_cover_position",
+            action: "cover.set_cover_position",  // Changed from "service"
             target: HATarget(entity_id: alarm.device.id),
             data: HAData(position: alarm.position)
         )
@@ -27,11 +32,10 @@ enum AutomationMapper {
         return HAAutomation(
             id: automationId,
             alias: "halarm_\(automationId)",
-            unique_id: "halarm_\(automationId)",
-            trigger: [trigger],
-            condition: alarm.weekdays.count == 7 ? nil : [condition],
-            action: [action],
-            enabled: alarm.isEnabled,
+            description: "",
+            triggers: [trigger],  // Changed from "trigger"
+            conditions: conditions,  // Changed from "condition"
+            actions: [action],  // Changed from "action"
             mode: "single"
         )
     }
@@ -41,9 +45,9 @@ enum AutomationMapper {
             return nil
         }
 
-        // Extract time from trigger
-        guard let trigger = automation.trigger?.first,
-              trigger.platform == "time",
+        // Extract time from trigger (new format)
+        guard let trigger = automation.triggers?.first,
+              trigger.trigger == "time",
               let timeStr = trigger.at else {
             return nil
         }
@@ -55,9 +59,9 @@ enum AutomationMapper {
             return nil
         }
 
-        // Extract weekdays from condition
+        // Extract weekdays from conditions
         var weekdays: Set<Weekday> = []
-        if let condition = automation.condition?.first,
+        if let condition = automation.conditions?.first,
            let weekdayStrings = condition.weekday {
             weekdays = Set(weekdayStrings.compactMap { Weekday(rawValue: $0) })
         }
@@ -65,8 +69,8 @@ enum AutomationMapper {
             weekdays = Set(Weekday.allCases) // No condition = every day
         }
 
-        // Extract device and position from action
-        guard let action = automation.action?.first,
+        // Extract device and position from action (new format)
+        guard let action = automation.actions?.first,
               let target = action.target,
               let entityId = target.entity_id,
               let position = action.data?.position else {
@@ -79,7 +83,7 @@ enum AutomationMapper {
             hour: hour,
             minute: minute,
             weekdays: weekdays,
-            isEnabled: automation.enabled ?? true,
+            isEnabled: true,  // HA 2026.2.2 doesn't use "enabled" field
             device: CoverEntity(id: entityId, name: entityId),
             position: position
         )

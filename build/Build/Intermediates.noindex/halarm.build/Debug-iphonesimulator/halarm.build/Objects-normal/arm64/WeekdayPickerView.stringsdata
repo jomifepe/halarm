@@ -1,0 +1,16 @@
+{
+  "source": "/Users/jmfp/dev/misc/halarm/halarm/Views/WeekdayPickerView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Days",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 8
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,40 @@
+{
+  "source": "/Users/jmfp/dev/misc/halarm/halarm/Views/DevicePickerView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Search devices",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select Device",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Error: %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "No devices found",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 16
+        }
+      }
+    ]
+  },
+  "version": 1
+}
