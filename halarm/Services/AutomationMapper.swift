@@ -17,7 +17,7 @@ enum AutomationMapper {
         // Create condition for weekdays
         // No condition if all days (7) or no days (0) selected
         // If no days: runs once and is deleted; if all days: runs daily
-        let conditions: [HACondition]? = (alarm.weekdays.count == 0 || alarm.weekdays.count == 7) ? [] : [
+        let conditions: [HACondition]? = (alarm.weekdays.count == 0 || alarm.weekdays.count == 7) ? nil : [
             HACondition(
                 condition: "time",
                 weekday: weekdayValues

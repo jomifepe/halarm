@@ -182,6 +182,17 @@ struct HAAutomation: Codable {
     enum CodingKeys: String, CodingKey {
         case id, alias, description, triggers, conditions, actions, mode
     }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(alias, forKey: .alias)
+        try container.encodeIfPresent(description, forKey: .description)
+        try container.encodeIfPresent(triggers, forKey: .triggers)
+        try container.encodeIfPresent(conditions, forKey: .conditions)
+        try container.encodeIfPresent(actions, forKey: .actions)
+        try container.encodeIfPresent(mode, forKey: .mode)
+    }
 }
 
 struct HATrigger: Codable {
