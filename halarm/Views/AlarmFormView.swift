@@ -31,6 +31,17 @@ struct AlarmFormView: View {
                     WeekdayPickerView(selectedWeekdays: $viewModel.weekdays)
                 }
 
+                if !viewModel.isEditing {
+                    Section("Multiple Alarms") {
+                        Toggle("Create multiple", isOn: $viewModel.createMultiple)
+
+                        if viewModel.createMultiple {
+                            Stepper("Count: \(viewModel.multipleCount)", value: $viewModel.multipleCount, in: 2...20)
+                            Stepper("Interval: \(viewModel.intervalMinutes) min", value: $viewModel.intervalMinutes, in: 1...60)
+                        }
+                    }
+                }
+
                 Section("Blind Settings") {
                     NavigationLink(destination:
                         DevicePickerView(viewModel: devicePickerVM, selectedDevice: $viewModel.selectedDevice)
