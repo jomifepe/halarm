@@ -27,17 +27,17 @@ struct AlarmListView: View {
                 } else {
                     ForEach(viewModel.alarms) { alarm in
                         HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(alarm.label)
-                                    .font(.headline)
+                            VStack(alignment: .leading, spacing: 2) {
                                 HStack(spacing: 8) {
                                     Text(alarm.timeString)
+                                        .font(.headline)
+                                    Text(alarm.weekdayString)
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
-                                    Text(alarm.weekdayString)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
                                 }
+                                Text(alarm.label)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
 
                             Spacer()
