@@ -25,7 +25,7 @@ struct AlarmListView: View {
                     Text("No alarms yet")
                         .foregroundColor(.secondary)
                 } else {
-                    ForEach($viewModel.alarms) { $alarm in
+                    ForEach(viewModel.alarms) { alarm in
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(alarm.label)
@@ -42,12 +42,12 @@ struct AlarmListView: View {
 
                             Spacer()
 
-                            Toggle("", isOn: $alarm.isEnabled)
-                                .onChange(of: alarm.isEnabled) { oldValue, newValue in
-                                    Task {
-                                        await viewModel.toggleAlarm(id: alarm.id, enabled: newValue)
-                                    }
+                            Toggle("", isOn: Binding(
+                                get: { alarm.isEnabled },
+                                set: { newValue in
+                                    Task { await viewModel.toggleAlarm(id: alarm.id, enabled: newValue) }
                                 }
+                            ))
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -55,10 +55,8 @@ struct AlarmListView: View {
                         }
                     }
                     .onDelete { indexSet in
-                        // Capture alarm objects first before any array modifications
                         let alarmsToDelete = indexSet.map { viewModel.alarms[$0] }
                         Task {
-                            // Delete each alarm (alarms array will shrink as we delete)
                             for alarm in alarmsToDelete {
                                 await viewModel.deleteAlarm(id: alarm.id)
                             }
