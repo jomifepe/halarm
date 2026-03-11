@@ -11,8 +11,7 @@ struct AlarmListView: View {
     @State private var showingSettings = false
     @State private var selectedAlarmForEdit: Alarm?
     @State private var showingTimeShift = false
-    @State private var shiftHours: Int = 0
-    @State private var shiftMinutes: Int = 0
+    @State private var shiftDate: Date = Calendar.current.startOfDay(for: Date())
     @State private var shiftDirection: ShiftDirection = .forward
 
     private let haService: HAService?
@@ -126,61 +125,38 @@ struct AlarmListView: View {
         }
     }
 
-    private var shiftSummary: String {
-        let sign = shiftDirection == .forward ? "+" : "-"
-        return "\(sign) \(shiftHours)h \(shiftMinutes)m"
-    }
-
     @ViewBuilder
     private var timeShiftSheet: some View {
-        NavigationStack {
-            Form {
-                Section("Direction") {
-                    Picker("Direction", selection: $shiftDirection) {
-                        ForEach(ShiftDirection.allCases, id: \.self) { dir in
-                            Text(dir.rawValue).tag(dir)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
+        VStack(spacing: 16) {
+            Text("Shift Alarms")
+                .font(.headline)
+                .padding(.top, 20)
 
-                Section("Amount") {
-                    Stepper("Hours: \(shiftHours)", value: $shiftHours, in: 0...23)
-                    Stepper("Minutes: \(shiftMinutes)", value: $shiftMinutes, in: 0...59)
-                }
-
-                Section {
-                    HStack {
-                        Text("Shift")
-                        Spacer()
-                        Text(shiftSummary)
-                            .foregroundColor(.secondary)
-                    }
+            Picker("Direction", selection: $shiftDirection) {
+                ForEach(ShiftDirection.allCases, id: \.self) { dir in
+                    Text(dir.rawValue).tag(dir)
                 }
             }
-            .navigationTitle("Shift Alarms")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        showingTimeShift = false
-                        shiftHours = 0
-                        shiftMinutes = 0
-                        shiftDirection = .forward
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") {
-                        let total = (shiftHours * 60 + shiftMinutes) * (shiftDirection == .forward ? 1 : -1)
-                        showingTimeShift = false
-                        shiftHours = 0
-                        shiftMinutes = 0
-                        shiftDirection = .forward
-                        Task { await viewModel.shiftAlarms(byMinutes: total) }
-                    }
-                    .disabled(shiftHours == 0 && shiftMinutes == 0)
-                }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+
+            DatePicker("", selection: $shiftDate, displayedComponents: .hourAndMinute)
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+
+            Button("Apply") {
+                let components = Calendar.current.dateComponents([.hour, .minute], from: shiftDate)
+                let totalMinutes = ((components.hour ?? 0) * 60 + (components.minute ?? 0))
+                    * (shiftDirection == .forward ? 1 : -1)
+                shiftDate = Calendar.current.startOfDay(for: Date())
+                shiftDirection = .forward
+                showingTimeShift = false
+                Task { await viewModel.shiftAlarms(byMinutes: totalMinutes) }
             }
+            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 20)
         }
+        .presentationDetents([.height(380)])
+        .presentationDragIndicator(.visible)
     }
 }
