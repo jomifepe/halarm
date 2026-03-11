@@ -29,6 +29,22 @@ final class AlarmFormViewModel {
 
     var isEditing: Bool { existingAlarm != nil }
 
+    init() {
+        if SettingsStore.shared.persistLastAlarmConfig {
+            let store = SettingsStore.shared
+            label = store.lastLabel
+            hour = store.lastHour
+            minute = store.lastMinute
+            weekdays = Set(store.lastWeekdays.compactMap { Weekday(rawValue: $0) })
+            position = store.lastPosition
+            createMultiple = store.lastCreateMultiple
+            multipleCount = store.lastMultipleCount
+            intervalMinutes = store.lastIntervalMinutes
+            blindDirection = BlindDirection(rawValue: store.lastBlindDirection) ?? .open
+            positionIncrement = store.lastPositionIncrement
+        }
+    }
+
     var formattedTime: String {
         String(format: "%02d:%02d", hour, minute)
     }
@@ -74,6 +90,21 @@ final class AlarmFormViewModel {
         // Save this device as the last used
         SettingsStore.shared.lastDeviceId = device.id
         SettingsStore.shared.lastDeviceName = device.name
+
+        // Persist alarm config if opted in
+        if SettingsStore.shared.persistLastAlarmConfig && existingAlarm == nil {
+            let store = SettingsStore.shared
+            store.lastLabel = label
+            store.lastHour = hour
+            store.lastMinute = minute
+            store.lastWeekdays = weekdays.map { $0.rawValue }
+            store.lastPosition = position
+            store.lastCreateMultiple = createMultiple
+            store.lastMultipleCount = multipleCount
+            store.lastIntervalMinutes = intervalMinutes
+            store.lastBlindDirection = blindDirection.rawValue
+            store.lastPositionIncrement = positionIncrement
+        }
 
         let baseLabel = label
 

@@ -1,10 +1,19 @@
 import SwiftUI
 
+private enum ShiftDirection: String, CaseIterable {
+    case forward = "Later"
+    case backward = "Earlier"
+}
+
 struct AlarmListView: View {
     @State var viewModel: AlarmListViewModel
     @State private var showingNewAlarmForm = false
     @State private var showingSettings = false
     @State private var selectedAlarmForEdit: Alarm?
+    @State private var showingTimeShift = false
+    @State private var shiftHours: Int = 0
+    @State private var shiftMinutes: Int = 0
+    @State private var shiftDirection: ShiftDirection = .forward
 
     private let haService: HAService?
 
@@ -74,6 +83,11 @@ struct AlarmListView: View {
                         Image(systemName: "plus")
                     }
 
+                    Button(action: { showingTimeShift = true }) {
+                        Image(systemName: "clock.arrow.2.circlepath")
+                    }
+                    .disabled(viewModel.alarms.isEmpty)
+
                     Button("Settings", systemImage: "ellipsis") {
                         showingSettings = true
                     }
@@ -103,8 +117,69 @@ struct AlarmListView: View {
                         }
                     }
             }
+            .sheet(isPresented: $showingTimeShift) {
+                timeShiftSheet
+            }
             .task {
                 await viewModel.loadAlarms()
+            }
+        }
+    }
+
+    private var shiftSummary: String {
+        let sign = shiftDirection == .forward ? "+" : "-"
+        return "\(sign) \(shiftHours)h \(shiftMinutes)m"
+    }
+
+    @ViewBuilder
+    private var timeShiftSheet: some View {
+        NavigationStack {
+            Form {
+                Section("Direction") {
+                    Picker("Direction", selection: $shiftDirection) {
+                        ForEach(ShiftDirection.allCases, id: \.self) { dir in
+                            Text(dir.rawValue).tag(dir)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Section("Amount") {
+                    Stepper("Hours: \(shiftHours)", value: $shiftHours, in: 0...23)
+                    Stepper("Minutes: \(shiftMinutes)", value: $shiftMinutes, in: 0...59)
+                }
+
+                Section {
+                    HStack {
+                        Text("Shift")
+                        Spacer()
+                        Text(shiftSummary)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .navigationTitle("Shift Alarms")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        showingTimeShift = false
+                        shiftHours = 0
+                        shiftMinutes = 0
+                        shiftDirection = .forward
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Apply") {
+                        let total = (shiftHours * 60 + shiftMinutes) * (shiftDirection == .forward ? 1 : -1)
+                        showingTimeShift = false
+                        shiftHours = 0
+                        shiftMinutes = 0
+                        shiftDirection = .forward
+                        Task { await viewModel.shiftAlarms(byMinutes: total) }
+                    }
+                    .disabled(shiftHours == 0 && shiftMinutes == 0)
+                }
             }
         }
     }

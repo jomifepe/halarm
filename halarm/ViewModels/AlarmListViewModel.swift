@@ -41,6 +41,30 @@ final class AlarmListViewModel {
         }
     }
 
+    func shiftAlarms(byMinutes shiftMinutes: Int) async {
+        guard let haService else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            for alarm in alarms {
+                let totalMinutes = alarm.hour * 60 + alarm.minute + shiftMinutes
+                let wrapped = ((totalMinutes % 1440) + 1440) % 1440
+                let shifted = Alarm(
+                    id: alarm.id, label: alarm.label,
+                    hour: wrapped / 60, minute: wrapped % 60,
+                    weekdays: alarm.weekdays, isEnabled: alarm.isEnabled,
+                    device: alarm.device, position: alarm.position
+                )
+                try await haService.updateAlarm(shifted)
+            }
+            alarms = try await haService.fetchAlarms()
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func toggleAlarm(id: String, enabled: Bool) async {
         guard let haService,
               let alarm = alarms.first(where: { $0.id == id }) else { return }

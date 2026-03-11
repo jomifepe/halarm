@@ -15,6 +15,13 @@ struct SettingsView: View {
                     SecureField("Long-lived Access Token", text: $viewModel.token)
                 }
 
+                Section("Preferences") {
+                    Toggle("Remember last alarm settings", isOn: Binding(
+                        get: { SettingsStore.shared.persistLastAlarmConfig },
+                        set: { SettingsStore.shared.persistLastAlarmConfig = $0 }
+                    ))
+                }
+
                 Section {
                     Button(action: {
                         Task {
