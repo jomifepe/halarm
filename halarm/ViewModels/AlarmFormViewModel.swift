@@ -2,7 +2,7 @@ import Foundation
 
 @Observable
 final class AlarmFormViewModel {
-    var label: String = ""
+    var label: String = "Blinds Alarm"
     var hour: Int = 7
     var minute: Int = 0
     var weekdays: Set<Weekday> = []
@@ -68,7 +68,7 @@ final class AlarmFormViewModel {
         SettingsStore.shared.lastDeviceId = device.id
         SettingsStore.shared.lastDeviceName = device.name
 
-        let baseLabel = label.isEmpty ? "\(device.name) \(formattedTime)" : label
+        let baseLabel = label
 
         if createMultiple && existingAlarm == nil {
             for i in 0..<multipleCount {

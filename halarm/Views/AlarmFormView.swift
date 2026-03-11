@@ -17,7 +17,7 @@ struct AlarmFormView: View {
         NavigationStack {
             Form {
                 Section("Alarm Details") {
-                    TextField("Label (optional)", text: $viewModel.label)
+                    TextField("Label", text: $viewModel.label)
 
                     HStack {
                         Text("Time")
