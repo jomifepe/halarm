@@ -55,10 +55,11 @@ struct AlarmListView: View {
                         }
                     }
                     .onDelete { indexSet in
+                        // Capture alarm objects first before any array modifications
+                        let alarmsToDelete = indexSet.map { viewModel.alarms[$0] }
                         Task {
-                            // Delete in reverse order to avoid index shifting
-                            for index in indexSet.sorted(by: >) {
-                                let alarm = viewModel.alarms[index]
+                            // Delete each alarm (alarms array will shrink as we delete)
+                            for alarm in alarmsToDelete {
                                 await viewModel.deleteAlarm(id: alarm.id)
                             }
                         }
