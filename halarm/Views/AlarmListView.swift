@@ -16,7 +16,7 @@ struct AlarmListView: View {
     var body: some View {
         NavigationStack {
             List {
-                if viewModel.isLoading {
+                if viewModel.isLoading && viewModel.alarms.isEmpty {
                     ProgressView()
                 } else if let error = viewModel.errorMessage {
                     Text("Error: \(error)")

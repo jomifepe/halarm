@@ -111,7 +111,7 @@ actor HAService {
         let url = URL(string: baseURL + "/api/config/automation/config/\(alarm.id)")!
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "PUT"
+        request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let automation = AutomationMapper.toHA(from: alarm)

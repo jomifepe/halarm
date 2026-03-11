@@ -35,7 +35,8 @@ enum AutomationMapper {
         let metadata: [String: Any] = [
             "label": alarm.label,
             "deviceId": alarm.device.id,
-            "position": alarm.position
+            "position": alarm.position,
+            "weekdays": weekdayValues
         ]
         let description = (try? JSONSerialization.data(withJSONObject: metadata))
             .flatMap { String(data: $0, encoding: .utf8) } ?? ""
@@ -75,16 +76,6 @@ enum AutomationMapper {
             return nil
         }
 
-        // Extract weekdays from conditions
-        var weekdays: Set<Weekday> = []
-        if let condition = automation.conditions?.first,
-           let weekdayStrings = condition.weekday {
-            weekdays = Set(weekdayStrings.compactMap { Weekday(rawValue: $0) })
-        }
-        if weekdays.isEmpty {
-            weekdays = Set(Weekday.allCases) // No condition = every day
-        }
-
         // Extract device and position from action (new format)
         guard let action = automation.actions?.first,
               let target = action.target,
@@ -93,9 +84,12 @@ enum AutomationMapper {
             return nil
         }
 
-        // Parse metadata from description (stored as JSON)
+        // Parse metadata from description (stored as JSON) early to get weekdays
         var label = automation.alias ?? ""
         var deviceId = entityId
+        var weekdays: Set<Weekday> = []
+        var weekdaysFromMetadata = false
+
         if let description = automation.description,
            !description.isEmpty,
            let data = description.data(using: .utf8),
@@ -105,6 +99,22 @@ enum AutomationMapper {
             }
             if let metadataDeviceId = json["deviceId"] as? String {
                 deviceId = metadataDeviceId
+            }
+            // Check for weekdays in metadata (round-trip support)
+            if let metadataWeekdays = json["weekdays"] as? [String] {
+                weekdays = Set(metadataWeekdays.compactMap { Weekday(rawValue: $0) })
+                weekdaysFromMetadata = true
+            }
+        }
+
+        // If weekdays not found in metadata, extract from conditions (backward compatibility)
+        if !weekdaysFromMetadata {
+            if let condition = automation.conditions?.first,
+               let weekdayStrings = condition.weekday {
+                weekdays = Set(weekdayStrings.compactMap { Weekday(rawValue: $0) })
+            }
+            if weekdays.isEmpty {
+                weekdays = Set(Weekday.allCases) // No condition = every day (backward compat)
             }
         }
 

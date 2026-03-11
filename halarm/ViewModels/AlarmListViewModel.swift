@@ -29,11 +29,14 @@ final class AlarmListViewModel {
     func deleteAlarm(id: String) async {
         guard let haService else { return }
 
+        // Remove optimistically first to keep SwiftUI animations consistent
+        alarms.removeAll { $0.id == id }
+
         do {
             try await haService.deleteAlarm(id: id)
-            alarms.removeAll { $0.id == id }
             errorMessage = nil
         } catch {
+            await loadAlarms()  // restore on failure
             errorMessage = error.localizedDescription
         }
     }
