@@ -5,7 +5,7 @@ struct WeekdayPickerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Days")
+            Text("Repeat")
                 .font(.headline)
 
             HStack(spacing: 6) {

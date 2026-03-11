@@ -38,6 +38,15 @@ struct AlarmFormView: View {
                         if viewModel.createMultiple {
                             Stepper("Count: \(viewModel.multipleCount)", value: $viewModel.multipleCount, in: 2...20)
                             Stepper("Interval: \(viewModel.intervalMinutes) min", value: $viewModel.intervalMinutes, in: 1...60)
+
+                            Picker("Direction", selection: $viewModel.blindDirection) {
+                                ForEach(BlindDirection.allCases, id: \.self) { direction in
+                                    Text(direction.rawValue).tag(direction)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+
+                            Stepper("Position step: \(viewModel.positionIncrement)%", value: $viewModel.positionIncrement, in: 1...100)
                         }
                     }
                 }

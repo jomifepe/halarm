@@ -1,9 +1,14 @@
 import Foundation
 
+enum BlindDirection: String, CaseIterable {
+    case open = "Open"
+    case close = "Close"
+}
+
 @Observable
 final class AlarmFormViewModel {
     var label: String = "Blinds Alarm"
-    var hour: Int = 7
+    var hour: Int = 8
     var minute: Int = 0
     var weekdays: Set<Weekday> = []
     var selectedDevice: CoverEntity?
@@ -12,6 +17,8 @@ final class AlarmFormViewModel {
     var createMultiple: Bool = false
     var multipleCount: Int = 2
     var intervalMinutes: Int = 5
+    var blindDirection: BlindDirection = .open
+    var positionIncrement: Int = 10
 
     var availableDevices: [CoverEntity] = []
     var isLoading = false
@@ -76,6 +83,12 @@ final class AlarmFormViewModel {
                 let alarmHour = (totalMinutes / 60) % 24
                 let alarmMinute = totalMinutes % 60
                 let alarmLabel = "\(baseLabel) \(i + 1)"
+                let alarmPosition: Int
+                if blindDirection == .open {
+                    alarmPosition = min(100, positionIncrement * (i + 1))
+                } else {
+                    alarmPosition = max(0, 100 - positionIncrement * (i + 1))
+                }
                 let alarm = Alarm(
                     id: UUID().uuidString,
                     label: alarmLabel,
@@ -84,7 +97,7 @@ final class AlarmFormViewModel {
                     weekdays: weekdays,
                     isEnabled: true,
                     device: device,
-                    position: position
+                    position: alarmPosition
                 )
                 _ = try await haService.createAlarm(alarm)
             }
@@ -99,7 +112,7 @@ final class AlarmFormViewModel {
             weekdays: weekdays,
             isEnabled: true,
             device: device,
-            position: position
+            position: min(100, max(0, position))
         )
 
         if let existing = existingAlarm {
