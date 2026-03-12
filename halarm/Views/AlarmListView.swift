@@ -37,10 +37,13 @@ struct AlarmListView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(spacing: 8) {
                                     Text(alarm.timeString)
-                                        .font(.headline)
-                                    Text(alarm.weekdayString)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .font(.title)
+                                        .fontWeight(.semibold)
+                                    if !alarm.weekdayString.isEmpty {
+                                        Text(alarm.weekdayString)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                                 Text("\(alarm.label) · \(alarm.position)%")
                                     .font(.caption)

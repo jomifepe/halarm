@@ -16,7 +16,7 @@ struct Alarm: Identifiable, Hashable, Codable {
 
     var weekdayString: String {
         let sorted = weekdays.sorted { $0.rawValue < $1.rawValue }
-        guard !sorted.isEmpty else { return "None" }
+        guard !sorted.isEmpty else { return "" }
         if sorted.count == 7 {
             return "Every day"
         }
