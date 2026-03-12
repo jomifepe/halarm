@@ -8,7 +8,6 @@ final class SettingsViewModel {
     var testResult: String?
     var testError: String?
 
-    private var haService: HAService?
     private let settingsStore: SettingsStore
 
     init(settingsStore: SettingsStore) {
@@ -20,7 +19,6 @@ final class SettingsViewModel {
     func saveSettings() {
         settingsStore.baseURL = baseURL
         settingsStore.token = token
-        haService = HAService(baseURL: baseURL, token: token)
     }
 
     func testConnection() async {
@@ -39,7 +37,4 @@ final class SettingsViewModel {
         }
     }
 
-    func setupService(_ haService: HAService) {
-        self.haService = haService
-    }
 }

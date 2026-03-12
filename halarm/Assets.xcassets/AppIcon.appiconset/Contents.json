@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "951e3646-6d20-49ee-8cc4-4c74d37cf012.png",
+      "filename" : "Icon-iOS-Default-1024x1024@1x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "951e3646-6d20-49ee-8cc4-4c74d37cf012 1.png",
+      "filename" : "Icon-iOS-Dark-1024x1024@1x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "951e3646-6d20-49ee-8cc4-4c74d37cf012 2.png",
+      "filename" : "Icon-iOS-TintedDark-1024x1024@1x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

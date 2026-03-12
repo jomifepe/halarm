@@ -24,7 +24,7 @@ struct WeekdayPickerView: View {
                             .frame(height: 36)
                             .background(selectedWeekdays.contains(day) ? Color.blue : Color(.systemGray4))
                             .foregroundColor(selectedWeekdays.contains(day) ? .white : .primary)
-                            .cornerRadius(6)
+                            .clipShape(RoundedRectangle(cornerRadius: 6))
                     }
                     .buttonStyle(.plain)
                 }

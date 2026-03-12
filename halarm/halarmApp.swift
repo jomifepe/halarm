@@ -2,31 +2,31 @@ import SwiftUI
 
 @main
 struct halarmApp: App {
-    private let settingsStore = SettingsStore.shared
-    @State private var haService: HAService?
+    @State private var settingsStore = SettingsStore.shared
     @State private var alarmListViewModel = AlarmListViewModel()
+    @State private var haService = HAService(
+        baseURL: SettingsStore.shared.baseURL,
+        token: SettingsStore.shared.token
+    )
 
     var body: some Scene {
         WindowGroup {
             if settingsStore.isConfigured {
                 AlarmListView(viewModel: alarmListViewModel, haService: haService)
                     .task {
-                        if haService == nil {
-                            let service = HAService(baseURL: settingsStore.baseURL, token: settingsStore.token)
-                            haService = service
-                            alarmListViewModel.setupService(haService: service)
-                        }
+                        alarmListViewModel.setupService(haService: haService)
                     }
             } else {
                 SettingsView(viewModel: SettingsViewModel(settingsStore: settingsStore))
-                    .onAppear {
-                        if settingsStore.isConfigured {
-                            let service = HAService(baseURL: settingsStore.baseURL, token: settingsStore.token)
-                            haService = service
-                            alarmListViewModel.setupService(haService: service)
-                        }
-                    }
             }
         }
+        .onChange(of: settingsStore.baseURL) { refreshService() }
+        .onChange(of: settingsStore.token) { refreshService() }
+    }
+
+    private func refreshService() {
+        let service = HAService(baseURL: settingsStore.baseURL, token: settingsStore.token)
+        haService = service
+        alarmListViewModel.setupService(haService: service)
     }
 }

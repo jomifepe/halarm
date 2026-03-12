@@ -20,7 +20,8 @@ struct Alarm: Identifiable, Hashable, Codable {
         if sorted.count == 7 {
             return "Every day"
         }
-        if sorted.count == 5 && sorted.allSatisfy({ ["mon","tue","wed","thu","fri"].contains($0.rawValue) }) {
+        let workdays: Set<Weekday> = [.mon, .tue, .wed, .thu, .fri]
+        if Set(sorted) == workdays {
             return "Weekdays"
         }
         return sorted.map { $0.displayName }.joined(separator: ", ")

@@ -1,7 +1,7 @@
 import Foundation
 
 enum AutomationMapper {
-    static func toHA(from alarm: Alarm) -> HAAutomation {
+    nonisolated static func toHA(from alarm: Alarm) -> HAAutomation {
         let automationId = alarm.id.replacingOccurrences(of: "halarm_", with: "")
 
         // Create trigger in the new format (HA 2026.2.2)
@@ -17,7 +17,7 @@ enum AutomationMapper {
         // Create condition for weekdays
         // No condition if all days (7) or no days (0) selected
         // If no days: runs once and is deleted; if all days: runs daily
-        let conditions: [HACondition]? = (alarm.weekdays.count == 0 || alarm.weekdays.count == 7) ? nil : [
+        let conditions: [HACondition]? = (alarm.weekdays.isEmpty || alarm.weekdays.count == 7) ? nil : [
             HACondition(
                 condition: "time",
                 weekday: weekdayValues
@@ -35,6 +35,7 @@ enum AutomationMapper {
         let metadata: [String: Any] = [
             "label": alarm.label,
             "deviceId": alarm.device.id,
+            "deviceName": alarm.device.name,
             "position": alarm.position,
             "weekdays": weekdayValues
         ]
@@ -55,7 +56,7 @@ enum AutomationMapper {
         )
     }
 
-    static func toAlarm(from automation: HAAutomation) -> Alarm? {
+    nonisolated static func toAlarm(from automation: HAAutomation) -> Alarm? {
         // Since automations come from /api/halarm/automations endpoint,
         // they're already filtered to be halarm automations. Just verify the alias exists.
         guard automation.alias != nil else {
@@ -87,6 +88,7 @@ enum AutomationMapper {
         // Parse metadata from description (stored as JSON) early to get weekdays
         var label = automation.alias ?? ""
         var deviceId = entityId
+        var deviceName: String? = nil
         var weekdays: Set<Weekday> = []
         var weekdaysFromMetadata = false
 
@@ -99,6 +101,9 @@ enum AutomationMapper {
             }
             if let metadataDeviceId = json["deviceId"] as? String {
                 deviceId = metadataDeviceId
+            }
+            if let metadataDeviceName = json["deviceName"] as? String {
+                deviceName = metadataDeviceName
             }
             // Check for weekdays in metadata (round-trip support)
             if let metadataWeekdays = json["weekdays"] as? [String] {
@@ -125,7 +130,7 @@ enum AutomationMapper {
             minute: minute,
             weekdays: weekdays,
             isEnabled: true,  // HA 2026.2.2 doesn't use "enabled" field
-            device: CoverEntity(id: deviceId, name: deviceId),
+            device: CoverEntity(id: deviceId, name: deviceName ?? deviceId),
             position: position
         )
     }

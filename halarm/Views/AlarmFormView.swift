@@ -71,23 +71,25 @@ struct AlarmFormView: View {
                         }
                     }
 
-                    HStack {
-                        Text("Position")
-                        Spacer()
-                        Text("\(viewModel.position)%")
-                            .foregroundColor(.secondary)
-                    }
+                    if !viewModel.createMultiple || viewModel.isEditing {
+                        HStack {
+                            Text("Position")
+                            Spacer()
+                            Text("\(viewModel.position)%")
+                                .foregroundColor(.secondary)
+                        }
 
-                    Slider(value: positionBinding, in: 0...100, step: 1)
+                        Slider(value: positionBinding, in: 0...100, step: 1)
 
-                    HStack(spacing: 0) {
-                        Text("0% = Closed")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("100% = Open")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        HStack(spacing: 0) {
+                            Text("0% = Closed")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("100% = Open")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
 
@@ -98,7 +100,7 @@ struct AlarmFormView: View {
                     }
                 }
             }
-            .navigationTitle("New Alarm")
+            .navigationTitle(viewModel.isEditing ? "Edit Alarm" : "New Alarm")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -130,7 +132,6 @@ struct AlarmFormView: View {
                     viewModel.setupService(service)
                     devicePickerVM.setupService(service)
                     await viewModel.loadDevices()
-                    await devicePickerVM.loadDevices()
                 }
             }
         }

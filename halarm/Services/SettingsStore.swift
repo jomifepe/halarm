@@ -6,7 +6,7 @@ final class SettingsStore {
     private let defaults = UserDefaults.standard
 
     private static let baseURLKey = "halarm_baseURL"
-    private static let tokenKey = "halarm_token"
+    private static let tokenKeychainKey = "halarm_token"
     private static let lastDeviceIdKey = "halarm_lastDeviceId"
     private static let lastDeviceNameKey = "halarm_lastDeviceName"
     private static let persistLastConfigKey = "halarm_persistLastConfig"
@@ -27,8 +27,8 @@ final class SettingsStore {
     }
 
     var token: String {
-        get { defaults.string(forKey: Self.tokenKey) ?? "" }
-        set { defaults.set(newValue, forKey: Self.tokenKey) }
+        get { KeychainHelper.load(forKey: Self.tokenKeychainKey) ?? "" }
+        set { KeychainHelper.save(newValue, forKey: Self.tokenKeychainKey) }
     }
 
     var lastDeviceId: String? {
@@ -64,12 +64,12 @@ final class SettingsStore {
     }
 
     var lastHour: Int {
-        get { defaults.object(forKey: Self.lastHourKey) as? Int ?? 8 }
+        get { defaults.integer(forKey: Self.lastHourKey) }
         set { defaults.set(newValue, forKey: Self.lastHourKey) }
     }
 
     var lastMinute: Int {
-        get { defaults.object(forKey: Self.lastMinuteKey) as? Int ?? 0 }
+        get { defaults.integer(forKey: Self.lastMinuteKey) }
         set { defaults.set(newValue, forKey: Self.lastMinuteKey) }
     }
 
@@ -79,7 +79,7 @@ final class SettingsStore {
     }
 
     var lastPosition: Int {
-        get { defaults.object(forKey: Self.lastPositionKey) as? Int ?? 100 }
+        get { defaults.integer(forKey: Self.lastPositionKey) }
         set { defaults.set(newValue, forKey: Self.lastPositionKey) }
     }
 
@@ -89,12 +89,12 @@ final class SettingsStore {
     }
 
     var lastMultipleCount: Int {
-        get { defaults.object(forKey: Self.lastMultipleCountKey) as? Int ?? 2 }
+        get { defaults.integer(forKey: Self.lastMultipleCountKey) }
         set { defaults.set(newValue, forKey: Self.lastMultipleCountKey) }
     }
 
     var lastIntervalMinutes: Int {
-        get { defaults.object(forKey: Self.lastIntervalMinutesKey) as? Int ?? 5 }
+        get { defaults.integer(forKey: Self.lastIntervalMinutesKey) }
         set { defaults.set(newValue, forKey: Self.lastIntervalMinutesKey) }
     }
 
@@ -104,7 +104,7 @@ final class SettingsStore {
     }
 
     var lastPositionIncrement: Int {
-        get { defaults.object(forKey: Self.lastPositionIncrementKey) as? Int ?? 10 }
+        get { defaults.integer(forKey: Self.lastPositionIncrementKey) }
         set { defaults.set(newValue, forKey: Self.lastPositionIncrementKey) }
     }
 
@@ -116,6 +116,19 @@ final class SettingsStore {
     func clear() {
         baseURL = ""
         token = ""
+    }
+
+    private init() {
+        defaults.register(defaults: [
+            Self.lastLabelKey: "Blinds Alarm",
+            Self.lastHourKey: 8,
+            Self.lastMinuteKey: 0,
+            Self.lastPositionKey: 100,
+            Self.lastMultipleCountKey: 2,
+            Self.lastIntervalMinutesKey: 5,
+            Self.lastBlindDirectionKey: "Open",
+            Self.lastPositionIncrementKey: 10
+        ])
     }
 
     static let shared = SettingsStore()

@@ -17,11 +17,11 @@ actor HAService {
     // MARK: - Connection Test
 
     func testConnection() async throws {
-        let url = URL(string: baseURL + "/api/")!
+        guard let url = URL(string: baseURL + "/api/") else { throw HAError.invalidURL }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
-        let (data, response) = try await session.data(for: request)
+        let (_, response) = try await session.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw HAError.invalidResponse
@@ -40,7 +40,7 @@ actor HAService {
     // MARK: - Entities
 
     func fetchCoverEntities() async throws -> [CoverEntity] {
-        let url = URL(string: baseURL + "/api/states")!
+        guard let url = URL(string: baseURL + "/api/states") else { throw HAError.invalidURL }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
@@ -60,8 +60,7 @@ actor HAService {
     // MARK: - Alarms (HA Automations)
 
     func fetchAlarms() async throws -> [Alarm] {
-        // Fetch all halarm automations from the custom HA integration endpoint
-        let url = URL(string: baseURL + "/api/halarm/automations")!
+        guard let url = URL(string: baseURL + "/api/halarm/automations") else { throw HAError.invalidURL }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
@@ -86,46 +85,18 @@ actor HAService {
     }
 
     func createAlarm(_ alarm: Alarm) async throws -> Alarm {
-        // URL must include the automation ID in the path
-        let url = URL(string: baseURL + "/api/config/automation/config/\(alarm.id)")!
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let automation = AutomationMapper.toHA(from: alarm)
-        request.httpBody = try JSONEncoder().encode(automation)
-
-        let (_, response) = try await session.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse, (200...201).contains(httpResponse.statusCode) else {
-            throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
-        }
-
-        // Home Assistant doesn't return the created automation in the response,
-        // so we just return the alarm we created
+        try await sendAutomation(alarm)
         return alarm
     }
 
     func updateAlarm(_ alarm: Alarm) async throws {
-        let url = URL(string: baseURL + "/api/config/automation/config/\(alarm.id)")!
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let automation = AutomationMapper.toHA(from: alarm)
-        request.httpBody = try JSONEncoder().encode(automation)
-
-        let (_, response) = try await session.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse, (200...204).contains(httpResponse.statusCode) else {
-            throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
-        }
+        try await sendAutomation(alarm)
     }
 
     func deleteAlarm(id: String) async throws {
-        let url = URL(string: baseURL + "/api/config/automation/config/\(id)")!
+        guard let url = URL(string: baseURL + "/api/config/automation/config/\(id)") else {
+            throw HAError.invalidURL
+        }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "DELETE"
@@ -139,20 +110,48 @@ actor HAService {
 
     func setEnabled(id: String, label: String, enabled: Bool) async throws {
         let service = enabled ? "turn_on" : "turn_off"
-        let url = URL(string: baseURL + "/api/services/automation/\(service)")!
+        guard let url = URL(string: baseURL + "/api/services/automation/\(service)") else {
+            throw HAError.invalidURL
+        }
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        // Construct entity_id from label (convert to lowercase, replace spaces with underscores)
-        let entityId = "automation." + label.lowercased().replacingOccurrences(of: " ", with: "_")
-        let payload = ["entity_id": entityId]
+        // Construct entity_id from label using HA's slugification rules.
+        // Note: HA may append _2, _3 for duplicate aliases; this is best-effort.
+        let slug = label
+            .lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .joined(separator: "_")
+        let payload = ["entity_id": "automation.\(slug)"]
         request.httpBody = try JSONEncoder().encode(payload)
 
         let (_, response) = try await session.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse, (200...201).contains(httpResponse.statusCode) else {
+            throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
+        }
+    }
+
+    // MARK: - Private Helpers
+
+    private func sendAutomation(_ alarm: Alarm) async throws {
+        guard let url = URL(string: baseURL + "/api/config/automation/config/\(alarm.id)") else {
+            throw HAError.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let automation = AutomationMapper.toHA(from: alarm)
+        request.httpBody = try JSONEncoder().encode(automation)
+
+        let (_, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, (200...204).contains(httpResponse.statusCode) else {
             throw HAError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
         }
     }
@@ -198,13 +197,6 @@ struct HAAutomation: Codable {
 struct HATrigger: Codable {
     let trigger: String  // "time", "state", etc.
     let at: String?      // time in HH:MM:SS format
-
-    // For flexible decoding of additional fields
-    var dynamicFields: [String: AnyCodable] = [:]
-
-    enum CodingKeys: String, CodingKey {
-        case trigger, at
-    }
 }
 
 struct HACondition: Codable {
@@ -226,57 +218,25 @@ struct HAData: Codable {
     let position: Int?
 }
 
-// Helper for decoding unknown fields
-struct AnyCodable: Codable {
-    let value: Any
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let intVal = try? container.decode(Int.self) {
-            value = intVal
-        } else if let stringVal = try? container.decode(String.self) {
-            value = stringVal
-        } else if let boolVal = try? container.decode(Bool.self) {
-            value = boolVal
-        } else {
-            value = NSNull()
-        }
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        if let intVal = value as? Int {
-            try container.encode(intVal)
-        } else if let stringVal = value as? String {
-            try container.encode(stringVal)
-        } else if let boolVal = value as? Bool {
-            try container.encode(boolVal)
-        }
-    }
-}
-
 // MARK: - Errors
 
 enum HAError: LocalizedError {
+    case invalidURL
     case invalidResponse
     case unauthorized
     case httpError(Int)
-    case decodingError
-    case networkError(Error)
     case pluginNotInstalled
 
     var errorDescription: String? {
         switch self {
+        case .invalidURL:
+            return "Invalid Home Assistant URL"
         case .invalidResponse:
             return "Invalid response from Home Assistant"
         case .unauthorized:
             return "Invalid token or unauthorized access"
         case .httpError(let code):
             return "HTTP error \(code)"
-        case .decodingError:
-            return "Failed to decode response"
-        case .networkError(let error):
-            return error.localizedDescription
         case .pluginNotInstalled:
             return "HAlarm plugin not installed. Copy ha_integration/custom_components/halarm/ to your HA config directory and add 'halarm:' to configuration.yaml, then restart HA."
         }
