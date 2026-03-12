@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(\.dismiss) var dismiss
+    var isInitialSetup: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -54,12 +55,18 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
-                        viewModel.saveSettings()
-                        dismiss()
+                    if isInitialSetup {
+                        Button("Continue") {
+                            viewModel.saveSettings()
+                            dismiss()
+                        }
+                    } else {
+                        Button("Save") {
+                            viewModel.saveSettings()
+                        }
                     }
                 }
             }

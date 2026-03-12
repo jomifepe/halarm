@@ -8,7 +8,6 @@ private enum ShiftDirection: String, CaseIterable {
 struct AlarmListView: View {
     @State var viewModel: AlarmListViewModel
     @State private var showingNewAlarmForm = false
-    @State private var showingSettings = false
     @State private var selectedAlarmForEdit: Alarm?
     @State private var showingTimeShift = false
     @State private var shiftDate: Date = Calendar.current.startOfDay(for: Date())
@@ -77,18 +76,15 @@ struct AlarmListView: View {
             }
             .navigationTitle("Alarms")
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: { showingNewAlarmForm = true }) {
-                        Image(systemName: "plus")
-                    }
-
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { showingTimeShift = true }) {
                         Image(systemName: "clock.arrow.2.circlepath")
                     }
                     .disabled(viewModel.alarms.isEmpty)
-
-                    Button("Settings", systemImage: "ellipsis") {
-                        showingSettings = true
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingNewAlarmForm = true }) {
+                        Image(systemName: "plus")
                     }
                 }
             }
@@ -100,9 +96,6 @@ struct AlarmListView: View {
                             await viewModel.loadAlarms()
                         }
                     }
-            }
-            .sheet(isPresented: $showingSettings) {
-                SettingsView(viewModel: SettingsViewModel(settingsStore: SettingsStore.shared))
             }
             .sheet(item: $selectedAlarmForEdit) { alarm in
                 let formVM = AlarmFormViewModel()

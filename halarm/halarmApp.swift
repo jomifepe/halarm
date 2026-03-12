@@ -12,12 +12,22 @@ struct halarmApp: App {
     var body: some Scene {
         WindowGroup {
             if settingsStore.isConfigured {
-                AlarmListView(viewModel: alarmListViewModel, haService: haService)
-                    .task {
-                        alarmListViewModel.setupService(haService: haService)
+                TabView {
+                    Tab("Alarms", systemImage: "alarm") {
+                        AlarmListView(viewModel: alarmListViewModel, haService: haService)
+                            .task {
+                                alarmListViewModel.setupService(haService: haService)
+                            }
                     }
+                    Tab("Settings", systemImage: "gearshape") {
+                        SettingsView(viewModel: SettingsViewModel(settingsStore: settingsStore))
+                    }
+                }
             } else {
-                SettingsView(viewModel: SettingsViewModel(settingsStore: settingsStore))
+                SettingsView(
+                    viewModel: SettingsViewModel(settingsStore: settingsStore),
+                    isInitialSetup: true
+                )
             }
         }
         .onChange(of: settingsStore.baseURL) { refreshService() }
