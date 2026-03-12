@@ -36,7 +36,7 @@ This app was tested with the following devices during development:
 
 1. Copy `ha_integration/custom_components/halarm/` to your HA `config/custom_components/` directory
 2. Add `halarm:` to your `configuration.yaml` and restart Home Assistant
-3. Open the app, enter your HA base URL (default: `http://homeassistant.local:8123`) and access token, tap **Continue**
+3. Open the app, enter your HA base URL (default: `http://homeassistant.local:8123`) and access token, tap **Done**
 
 ## Features
 
