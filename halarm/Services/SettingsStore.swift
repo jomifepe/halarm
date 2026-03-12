@@ -22,13 +22,11 @@ final class SettingsStore {
     private static let lastPositionIncrementKey = "halarm_lastPositionIncrement"
 
     var baseURL: String {
-        get { defaults.string(forKey: Self.baseURLKey) ?? "" }
-        set { defaults.set(newValue, forKey: Self.baseURLKey) }
+        didSet { defaults.set(baseURL, forKey: Self.baseURLKey) }
     }
 
     var token: String {
-        get { KeychainHelper.load(forKey: Self.tokenKeychainKey) ?? "" }
-        set { KeychainHelper.save(newValue, forKey: Self.tokenKeychainKey) }
+        didSet { KeychainHelper.save(token, forKey: Self.tokenKeychainKey) }
     }
 
     var lastDeviceId: String? {
@@ -119,6 +117,8 @@ final class SettingsStore {
     }
 
     private init() {
+        self.baseURL = defaults.string(forKey: Self.baseURLKey) ?? "http://homeassistant.local:8123"
+        self.token = KeychainHelper.load(forKey: Self.tokenKeychainKey) ?? ""
         defaults.register(defaults: [
             Self.lastLabelKey: "Blinds Alarm",
             Self.lastHourKey: 8,
