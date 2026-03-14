@@ -5,8 +5,10 @@ private enum ShiftDirection: String, CaseIterable {
     case forward = "Later"
 }
 
+@MainActor
 struct AlarmListView: View {
     @State var viewModel: AlarmListViewModel
+    @State private var connectivityMonitor: ConnectivityMonitor
     @State private var showingNewAlarmForm = false
     @State private var selectedAlarmForEdit: Alarm?
     @State private var showingTimeShift = false
@@ -15,17 +17,35 @@ struct AlarmListView: View {
 
     private let haService: HAService?
 
-    init(viewModel: AlarmListViewModel = AlarmListViewModel(), haService: HAService? = nil) {
+    init(viewModel: AlarmListViewModel, haService: HAService? = nil) {
         self._viewModel = State(initialValue: viewModel)
+        self._connectivityMonitor = State(initialValue: ConnectivityMonitor.shared)
         self.haService = haService
     }
 
     var body: some View {
         NavigationStack {
             List {
+                if let message = connectivityMonitor.statusMessage {
+                    Label(message, systemImage: "wifi.exclamationmark")
+                        .font(.subheadline)
+                        .foregroundColor(.orange)
+                }
+
+                if let error = viewModel.errorMessage,
+                   !viewModel.alarms.isEmpty,
+                   error != connectivityMonitor.statusMessage {
+                    Section {
+                        Text(error)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
                 if viewModel.isLoading && viewModel.alarms.isEmpty {
                     ProgressView()
-                } else if let error = viewModel.errorMessage {
+                } else if let error = viewModel.errorMessage,
+                          viewModel.alarms.isEmpty,
+                          error != connectivityMonitor.statusMessage {
                     Text("Error: \(error)")
                         .foregroundColor(.red)
                 } else if viewModel.alarms.isEmpty {
@@ -58,11 +78,13 @@ struct AlarmListView: View {
                                     Task { await viewModel.toggleAlarm(id: alarm.id, enabled: newValue) }
                                 }
                             ))
+                            .disabled(connectivityMonitor.isOffline)
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
                             selectedAlarmForEdit = alarm
                         }
+                        .deleteDisabled(connectivityMonitor.isOffline)
                     }
                     .onDelete { indexSet in
                         let alarmsToDelete = indexSet.map { viewModel.alarms[$0] }
@@ -76,6 +98,10 @@ struct AlarmListView: View {
             }
             .refreshable {
                 await viewModel.loadAlarms()
+            }
+            .safeAreaInset(edge: .top) {
+                Color.clear
+                    .frame(height: 6)
             }
             .navigationTitle("Alarms")
             .toolbar {
@@ -93,7 +119,12 @@ struct AlarmListView: View {
             }
             .sheet(isPresented: $showingNewAlarmForm) {
                 let formVM = AlarmFormViewModel()
-                AlarmFormView(viewModel: formVM, haService: haService)
+                let devicePickerVM = DevicePickerViewModel()
+                AlarmFormView(
+                    viewModel: formVM,
+                    haService: haService,
+                    devicePickerViewModel: devicePickerVM
+                )
                     .onDisappear {
                         Task {
                             await viewModel.loadAlarms()
@@ -102,7 +133,12 @@ struct AlarmListView: View {
             }
             .sheet(item: $selectedAlarmForEdit) { alarm in
                 let formVM = AlarmFormViewModel()
-                return AlarmFormView(viewModel: formVM, haService: haService)
+                let devicePickerVM = DevicePickerViewModel()
+                return AlarmFormView(
+                    viewModel: formVM,
+                    haService: haService,
+                    devicePickerViewModel: devicePickerVM
+                )
                     .onAppear {
                         formVM.setupForEdit(alarm)
                     }
@@ -116,6 +152,9 @@ struct AlarmListView: View {
                 timeShiftSheet
             }
             .task {
+                if let haService {
+                    viewModel.setupService(haService: haService)
+                }
                 await viewModel.loadAlarms()
             }
         }
@@ -157,6 +196,7 @@ struct AlarmListView: View {
                         showingTimeShift = false
                         Task { await viewModel.shiftAlarms(byMinutes: totalMinutes) }
                     }
+                    .disabled(connectivityMonitor.isOffline)
                 }
             }
         }

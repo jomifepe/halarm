@@ -38,17 +38,13 @@ struct SettingsView: View {
                         }
                     }
                     .disabled(viewModel.isTestingConnection)
-                }
 
-                if let result = viewModel.testResult {
-                    Section {
+                    if let result = viewModel.testResult {
                         Text(result)
                             .foregroundColor(.green)
                     }
-                }
 
-                if let error = viewModel.testError {
-                    Section {
+                    if let error = viewModel.testError {
                         Text(error)
                             .foregroundColor(.red)
                     }

@@ -5,6 +5,7 @@ enum BlindDirection: String, CaseIterable {
     case close = "Close"
 }
 
+@MainActor
 @Observable
 final class AlarmFormViewModel {
     var label: String = "Blinds Alarm"
@@ -26,12 +27,25 @@ final class AlarmFormViewModel {
 
     private var haService: HAService?
     private var existingAlarm: Alarm?
+    private let cacheStore: AppCacheStore
+    private let connectivityMonitor: ConnectivityMonitor
+    private let settingsStore: SettingsStore
 
     var isEditing: Bool { existingAlarm != nil }
+    var isOffline: Bool { connectivityMonitor.isOffline }
 
-    init() {
-        if SettingsStore.shared.persistLastAlarmConfig {
-            let store = SettingsStore.shared
+    init(
+        cacheStore: AppCacheStore = .shared,
+        connectivityMonitor: ConnectivityMonitor = .shared,
+        settingsStore: SettingsStore = .shared
+    ) {
+        self.cacheStore = cacheStore
+        self.connectivityMonitor = connectivityMonitor
+        self.settingsStore = settingsStore
+        self.availableDevices = cacheStore.loadDevices(for: settingsStore.baseURL)
+
+        if settingsStore.persistLastAlarmConfig {
+            let store = settingsStore
             label = store.lastLabel
             hour = store.lastHour
             minute = store.lastMinute
@@ -66,34 +80,57 @@ final class AlarmFormViewModel {
     func loadDevices() async {
         guard let haService else { return }
 
+        if !availableDevices.isEmpty && selectedDevice == nil,
+           let lastDeviceId = settingsStore.lastDeviceId {
+            selectedDevice = availableDevices.first(where: { $0.id == lastDeviceId })
+        }
+
+        if connectivityMonitor.isOffline {
+            errorMessage = nil
+            return
+        }
+
         isLoading = true
         defer { isLoading = false }
 
         do {
             availableDevices = try await haService.fetchCoverEntities()
+            cacheStore.saveDevices(availableDevices, for: settingsStore.baseURL)
+            connectivityMonitor.reportRequestSuccess()
             errorMessage = nil
 
             // Pre-select the last used device if available
-            if selectedDevice == nil, let lastDeviceId = SettingsStore.shared.lastDeviceId {
+            if selectedDevice == nil, let lastDeviceId = settingsStore.lastDeviceId {
                 selectedDevice = availableDevices.first(where: { $0.id == lastDeviceId })
             }
         } catch {
-            errorMessage = error.localizedDescription
+            connectivityMonitor.reportRequestFailure(error)
+            errorMessage = connectivityMonitor.isOffline
+                ? nil
+                : error.localizedDescription
         }
     }
 
     func saveAlarm() async throws {
+        guard !connectivityMonitor.isOffline else {
+            throw NSError(
+                domain: "AlarmForm",
+                code: -2,
+                userInfo: [NSLocalizedDescriptionKey: connectivityMonitor.statusMessage ?? "Home Assistant is unreachable."]
+            )
+        }
+
         guard let haService, let device = selectedDevice else {
             throw NSError(domain: "AlarmForm", code: -1, userInfo: [NSLocalizedDescriptionKey: "Device not selected"])
         }
 
         // Save this device as the last used
-        SettingsStore.shared.lastDeviceId = device.id
-        SettingsStore.shared.lastDeviceName = device.name
+        settingsStore.lastDeviceId = device.id
+        settingsStore.lastDeviceName = device.name
 
         // Persist alarm config if opted in
-        if SettingsStore.shared.persistLastAlarmConfig && existingAlarm == nil {
-            let store = SettingsStore.shared
+        if settingsStore.persistLastAlarmConfig && existingAlarm == nil {
+            let store = settingsStore
             store.lastLabel = label
             store.lastHour = hour
             store.lastMinute = minute
@@ -109,28 +146,35 @@ final class AlarmFormViewModel {
         let baseLabel = label
 
         if createMultiple && existingAlarm == nil {
-            for i in 0..<multipleCount {
-                let totalMinutes = hour * 60 + minute + i * intervalMinutes
-                let alarmHour = (totalMinutes / 60) % 24
-                let alarmMinute = totalMinutes % 60
-                let alarmLabel = "\(baseLabel) \(i + 1)"
-                let alarmPosition: Int
-                if blindDirection == .open {
-                    alarmPosition = min(100, positionIncrement * (i + 1))
-                } else {
-                    alarmPosition = max(0, 100 - positionIncrement * (i + 1))
+            do {
+                for i in 0..<multipleCount {
+                    let totalMinutes = hour * 60 + minute + i * intervalMinutes
+                    let alarmHour = (totalMinutes / 60) % 24
+                    let alarmMinute = totalMinutes % 60
+                    let alarmLabel = "\(baseLabel) \(i + 1)"
+                    let positionOffset = positionIncrement * i
+                    let alarmPosition: Int
+                    if blindDirection == .open {
+                        alarmPosition = min(100, position + positionOffset)
+                    } else {
+                        alarmPosition = max(0, position - positionOffset)
+                    }
+                    let alarm = Alarm(
+                        id: UUID().uuidString,
+                        label: alarmLabel,
+                        hour: alarmHour,
+                        minute: alarmMinute,
+                        weekdays: weekdays,
+                        isEnabled: true,
+                        device: device,
+                        position: alarmPosition
+                    )
+                    _ = try await haService.createAlarm(alarm)
                 }
-                let alarm = Alarm(
-                    id: UUID().uuidString,
-                    label: alarmLabel,
-                    hour: alarmHour,
-                    minute: alarmMinute,
-                    weekdays: weekdays,
-                    isEnabled: true,
-                    device: device,
-                    position: alarmPosition
-                )
-                _ = try await haService.createAlarm(alarm)
+                connectivityMonitor.reportRequestSuccess()
+            } catch {
+                connectivityMonitor.reportRequestFailure(error)
+                throw error
             }
             return
         }
@@ -146,19 +190,26 @@ final class AlarmFormViewModel {
             position: min(100, max(0, position))
         )
 
-        if let existing = existingAlarm {
-            try await haService.updateAlarm(Alarm(
-                id: existing.id,
-                label: alarm.label,
-                hour: alarm.hour,
-                minute: alarm.minute,
-                weekdays: alarm.weekdays,
-                isEnabled: alarm.isEnabled,
-                device: alarm.device,
-                position: alarm.position
-            ))
-        } else {
-            _ = try await haService.createAlarm(alarm)
+        do {
+            if let existing = existingAlarm {
+                try await haService.updateAlarm(Alarm(
+                    id: existing.id,
+                    label: alarm.label,
+                    hour: alarm.hour,
+                    minute: alarm.minute,
+                    weekdays: alarm.weekdays,
+                    isEnabled: alarm.isEnabled,
+                    device: alarm.device,
+                    position: alarm.position
+                ))
+            } else {
+                _ = try await haService.createAlarm(alarm)
+            }
+
+            connectivityMonitor.reportRequestSuccess()
+        } catch {
+            connectivityMonitor.reportRequestFailure(error)
+            throw error
         }
     }
 }

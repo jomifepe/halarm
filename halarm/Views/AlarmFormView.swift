@@ -1,21 +1,34 @@
 import SwiftUI
 
+@MainActor
 struct AlarmFormView: View {
     @State var viewModel: AlarmFormViewModel
+    @State private var connectivityMonitor: ConnectivityMonitor
     @Environment(\.dismiss) var dismiss
     @State private var isSaving = false
-    @State private var devicePickerVM = DevicePickerViewModel()
+    @State private var devicePickerVM: DevicePickerViewModel
 
     private let haService: HAService?
 
-    init(viewModel: AlarmFormViewModel = AlarmFormViewModel(), haService: HAService? = nil) {
+    init(
+        viewModel: AlarmFormViewModel,
+        haService: HAService? = nil,
+        devicePickerViewModel: DevicePickerViewModel
+    ) {
         self._viewModel = State(initialValue: viewModel)
+        self._connectivityMonitor = State(initialValue: ConnectivityMonitor.shared)
+        self._devicePickerVM = State(initialValue: devicePickerViewModel)
         self.haService = haService
     }
 
     var body: some View {
         NavigationStack {
             Form {
+                if let message = connectivityMonitor.statusMessage {
+                    Label(message, systemImage: "wifi.exclamationmark")
+                        .foregroundColor(.orange)
+                }
+
                 Section("Alarm Details") {
                     TextField("Label", text: $viewModel.label)
 
@@ -71,9 +84,9 @@ struct AlarmFormView: View {
                         }
                     }
 
-                    if !viewModel.createMultiple || viewModel.isEditing {
+                    VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("Position")
+                            Text(viewModel.createMultiple && !viewModel.isEditing ? "Starting Position" : "Position")
                             Spacer()
                             Text("\(viewModel.position)%")
                                 .foregroundColor(.secondary)
@@ -82,18 +95,19 @@ struct AlarmFormView: View {
                         Slider(value: positionBinding, in: 0...100, step: 1)
 
                         HStack(spacing: 0) {
-                            Text("0% = Closed")
+                            Text("Closed")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text("100% = Open")
+                            Text("Open")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
 
-                if let error = viewModel.errorMessage {
+                if let error = viewModel.errorMessage,
+                   error != connectivityMonitor.statusMessage {
                     Section {
                         Text(error)
                             .foregroundColor(.red)
@@ -123,7 +137,7 @@ struct AlarmFormView: View {
                                 }
                             }
                         }
-                        .disabled(viewModel.selectedDevice == nil)
+                        .disabled(viewModel.selectedDevice == nil || connectivityMonitor.isOffline)
                     }
                 }
             }

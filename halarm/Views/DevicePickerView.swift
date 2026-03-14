@@ -1,15 +1,39 @@
 import SwiftUI
 
+@MainActor
 struct DevicePickerView: View {
     @State var viewModel: DevicePickerViewModel
+    @State private var connectivityMonitor: ConnectivityMonitor
     @Binding var selectedDevice: CoverEntity?
     @Environment(\.dismiss) var dismiss
 
+    init(viewModel: DevicePickerViewModel, selectedDevice: Binding<CoverEntity?>) {
+        self._viewModel = State(initialValue: viewModel)
+        self._connectivityMonitor = State(initialValue: ConnectivityMonitor.shared)
+        self._selectedDevice = selectedDevice
+    }
+
     var body: some View {
         List {
+            if let message = connectivityMonitor.statusMessage {
+                Label(message, systemImage: "wifi.exclamationmark")
+                    .foregroundColor(.orange)
+            }
+
+            if let error = viewModel.errorMessage,
+               !viewModel.filteredDevices.isEmpty,
+               error != connectivityMonitor.statusMessage {
+                Section {
+                    Text(error)
+                        .foregroundColor(.secondary)
+                }
+            }
+
             if viewModel.isLoading {
                 ProgressView()
-            } else if let error = viewModel.errorMessage {
+            } else if let error = viewModel.errorMessage,
+                      viewModel.filteredDevices.isEmpty,
+                      error != connectivityMonitor.statusMessage {
                 Text("Error: \(error)")
                     .foregroundColor(.red)
             } else if viewModel.filteredDevices.isEmpty {

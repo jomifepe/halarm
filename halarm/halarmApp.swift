@@ -1,13 +1,24 @@
 import SwiftUI
 
 @main
+@MainActor
 struct halarmApp: App {
-    @State private var settingsStore = SettingsStore.shared
-    @State private var alarmListViewModel = AlarmListViewModel()
-    @State private var haService = HAService(
-        baseURL: SettingsStore.shared.baseURL,
-        token: SettingsStore.shared.token
-    )
+    @State private var settingsStore: SettingsStore
+    @State private var alarmListViewModel: AlarmListViewModel
+    @State private var haService: HAService
+
+    init() {
+        let settingsStore = SettingsStore.shared
+        let alarmListViewModel = AlarmListViewModel()
+        let haService = HAService(
+            baseURL: settingsStore.baseURL,
+            token: settingsStore.token
+        )
+
+        self._settingsStore = State(initialValue: settingsStore)
+        self._alarmListViewModel = State(initialValue: alarmListViewModel)
+        self._haService = State(initialValue: haService)
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -15,9 +26,6 @@ struct halarmApp: App {
                 TabView {
                     Tab("Alarms", systemImage: "alarm") {
                         AlarmListView(viewModel: alarmListViewModel, haService: haService)
-                            .task {
-                                alarmListViewModel.setupService(haService: haService)
-                            }
                     }
                     Tab("Settings", systemImage: "gearshape") {
                         SettingsView(viewModel: SettingsViewModel(settingsStore: settingsStore))
