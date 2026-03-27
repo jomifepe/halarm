@@ -38,6 +38,66 @@ This app was tested with the following devices during development:
 2. Add `halarm:` to your `configuration.yaml` and restart Home Assistant
 3. Open the app, enter your HA base URL (default: `http://homeassistant.local:8123`) and access token, tap **Done**
 
+## Exporting an IPA
+
+If you want to build and export an IPA locally, use Xcode or `xcodebuild` on a Mac that already has the correct Apple signing setup.
+
+### Xcode
+
+1. Open `halarm.xcodeproj` in Xcode
+2. Select the `halarm` scheme
+3. Choose **Any iOS Device (arm64)** or a generic iOS destination
+4. From the menu, choose **Product > Archive**
+5. When the archive finishes, open the Organizer
+6. Select the archive and choose **Distribute App**
+7. Pick the export method that matches your signing profile and intended use
+8. Export the IPA
+
+### Command line
+
+Archive:
+
+```bash
+xcodebuild \
+  -project halarm.xcodeproj \
+  -scheme halarm \
+  -configuration Release \
+  -destination "generic/platform=iOS" \
+  -archivePath /tmp/halarm.xcarchive \
+  -allowProvisioningUpdates \
+  archive
+```
+
+Create an export options plist, for example:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>debugging</string>
+  <key>signingStyle</key>
+  <string>automatic</string>
+  <key>teamID</key>
+  <string>YOUR_TEAM_ID</string>
+</dict>
+</plist>
+```
+
+Export:
+
+```bash
+xcodebuild \
+  -exportArchive \
+  -archivePath /tmp/halarm.xcarchive \
+  -exportPath /tmp/halarm-ipa \
+  -exportOptionsPlist /path/to/ExportOptions.plist \
+  -allowProvisioningUpdates
+```
+
+The exported IPA will be written to `/tmp/halarm-ipa`.
+
 ## Features
 
 - **Create alarms** — pick a time, weekdays, blind device, and target position
