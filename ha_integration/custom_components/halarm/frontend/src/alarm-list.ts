@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { Alarm, HassObject } from "./types.js";
 
@@ -24,8 +24,8 @@ export class AlarmList extends LitElement {
   @property({ type: Array }) alarms: Alarm[] = [];
   @property({ type: Boolean }) loading = false;
   @property({ type: String }) error = "";
+  @property({ type: Boolean }) shiftOpen = false;
 
-  @state() private _shiftOpen = false;
   @state() private _shiftMinutes = 0;
   @state() private _shifting = false;
 
@@ -33,38 +33,6 @@ export class AlarmList extends LitElement {
 
   static styles = css`
     :host { display: block; padding: 16px; }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin-bottom: 16px;
-    }
-
-    .header-actions { display: flex; gap: 8px; }
-
-    button.icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 8px;
-      color: var(--primary-color, #03a9f4);
-      font-size: 13px;
-      font-weight: 500;
-    }
-    button.icon-btn:hover { background: var(--secondary-background-color, #f5f5f5); }
-
-    .add-btn {
-      background: var(--primary-color, #03a9f4);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
 
     .shift-bar {
       position: fixed;
@@ -92,6 +60,7 @@ export class AlarmList extends LitElement {
     .list-padding-for-shift-bar {
       height: 180px;
     }
+
     .shift-header {
       display: flex;
       align-items: baseline;
@@ -235,8 +204,11 @@ export class AlarmList extends LitElement {
     .delete-btn:hover { color: var(--error-color, #f44336); background: var(--error-color-background, #fdecea); }
   `;
 
-  private _onAdd() {
-    this.dispatchEvent(new CustomEvent("add", { bubbles: true, composed: true }));
+  updated(changed: PropertyValues) {
+    // When the parent closes the shift sheet, reset the in-progress slider value.
+    if (changed.has("shiftOpen") && !this.shiftOpen) {
+      this._shiftMinutes = 0;
+    }
   }
 
   private _onEdit(alarm: Alarm) {
@@ -260,13 +232,13 @@ export class AlarmList extends LitElement {
     this._shifting = true;
     this.dispatchEvent(new CustomEvent("shift", { detail: this._shiftMinutes, bubbles: true, composed: true }));
     this._shifting = false;
-    this._shiftOpen = false;
     this._shiftMinutes = 0;
+    this.dispatchEvent(new CustomEvent("shift-close", { bubbles: true, composed: true }));
   }
 
   private _closeShift() {
-    this._shiftOpen = false;
     this._shiftMinutes = 0;
+    this.dispatchEvent(new CustomEvent("shift-close", { bubbles: true, composed: true }));
   }
 
   private _computeShiftedTime(alarm: Alarm): { hour: number; minute: number } {
@@ -292,26 +264,17 @@ export class AlarmList extends LitElement {
   }
 
   render() {
-    const shiftOpen = this._shiftOpen;
+    const shiftOpen = this.shiftOpen;
     const shift = this._shiftMinutes;
     const range = AlarmList.SHIFT_RANGE;
 
     return html`
-      <div class="header">
-        <div class="header-actions">
-          <button class="icon-btn" @click=${() => { this._shiftOpen = !this._shiftOpen; if (!this._shiftOpen) this._shiftMinutes = 0; }}>
-            ${shiftOpen ? "Close shift" : "Shift all"}
-          </button>
-          <button class="add-btn" @click=${this._onAdd}>+ Add</button>
-        </div>
-      </div>
-
       ${this.error ? html`<div class="error">${this.error}</div>` : ""}
 
       ${this.loading
         ? html`<div class="status">Loading…</div>`
         : this.alarms.length === 0
-        ? html`<div class="status">No alarms. Tap + Add to create one.</div>`
+        ? html`<div class="status">No alarms. Tap + to create one.</div>`
         : html`
           <ul>
             ${this.alarms.map((alarm) => {

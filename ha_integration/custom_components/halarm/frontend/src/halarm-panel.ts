@@ -67,6 +67,7 @@ export class HalarmPanel extends LitElement {
   @state() private _devices: CoverEntity[] = [];
   @state() private _loading = false;
   @state() private _error = "";
+  @state() private _shiftOpen = false;
 
   static styles = css`
     :host {
@@ -109,10 +110,22 @@ export class HalarmPanel extends LitElement {
     .toolbar .icon-btn:hover {
       background: rgba(255, 255, 255, 0.1);
     }
+    .toolbar .icon-btn.active {
+      background: rgba(255, 255, 255, 0.22);
+    }
     .toolbar .icon-btn svg {
       width: 24px;
       height: 24px;
+    }
+    /* Filled glyphs (menu / back / add) use currentColor for their path fill.
+       Stroked icons (like the Tabler shift icon) set fill="none" inline and
+       must keep it; we scope the fill rule so we don't override them. */
+    .toolbar .icon-btn svg.filled {
       fill: currentColor;
+    }
+    .toolbar .icon-btn svg.stroked {
+      fill: none;
+      stroke: currentColor;
     }
 
     .toolbar .title {
@@ -272,7 +285,7 @@ export class HalarmPanel extends LitElement {
         aria-label="Open menu"
         @click=${this._toggleMenu}
       >
-        <svg viewBox="0 0 24 24">
+        <svg class="filled" viewBox="0 0 24 24">
           <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
         </svg>
       </button>
@@ -284,8 +297,34 @@ export class HalarmPanel extends LitElement {
         aria-label="Back"
         @click=${this._backToList}
       >
-        <svg viewBox="0 0 24 24">
+        <svg class="filled" viewBox="0 0 24 24">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+      </button>
+    `;
+
+    const shiftButton = html`
+      <button
+        class="icon-btn ${this._shiftOpen ? "active" : ""}"
+        aria-label=${this._shiftOpen ? "Close shift" : "Shift all alarms"}
+        title=${this._shiftOpen ? "Close shift" : "Shift all alarms"}
+        @click=${() => { this._shiftOpen = !this._shiftOpen; }}
+      >
+        <svg class="stroked" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.95009 6.08796V10.088L11.9501 12.088M1.00009 9.08796C1.22418 6.88802 2.25036 4.84757 3.88282 3.35593C5.51529 1.86428 7.63979 1.02584 9.85097 1.00059C12.0622 0.975332 14.2052 1.76502 15.8714 3.21899C17.5375 4.67296 18.61 6.68944 18.8843 8.88369C19.1585 11.0779 18.6154 13.2964 17.3584 15.1157C16.1015 16.9351 14.2187 18.228 12.0694 18.7478C9.92001 19.2676 7.6545 18.9779 5.70509 17.934C3.75567 16.8901 2.25881 15.1651 1.50009 13.088M1.00009 18.088V13.088H6.00009" />
+        </svg>
+      </button>
+    `;
+
+    const addButton = html`
+      <button
+        class="icon-btn"
+        aria-label="Add alarm"
+        title="Add alarm"
+        @click=${() => { this._view = "create"; this._error = ""; this._shiftOpen = false; }}
+      >
+        <svg class="filled" viewBox="0 0 24 24">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
         </svg>
       </button>
     `;
@@ -294,6 +333,7 @@ export class HalarmPanel extends LitElement {
       <div class="toolbar">
         ${inSubView ? backButton : menuButton}
         <div class="title">${this._title}</div>
+        ${!inSubView ? html`${shiftButton}${addButton}` : ""}
       </div>
 
       <div class="content">
@@ -313,7 +353,8 @@ export class HalarmPanel extends LitElement {
                 .alarms=${this._alarms}
                 .loading=${this._loading}
                 .error=${this._error}
-                @add=${() => { this._view = "create"; this._error = ""; }}
+                .shiftOpen=${this._shiftOpen}
+                @shift-close=${() => { this._shiftOpen = false; }}
                 @edit=${(e: CustomEvent) => { this._view = { edit: e.detail }; this._error = ""; }}
                 @delete=${this._handleDelete}
                 @toggle=${this._handleToggle}
