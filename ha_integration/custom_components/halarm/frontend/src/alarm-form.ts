@@ -124,22 +124,6 @@ export class AlarmForm extends LitElement {
   static styles = css`
     :host { display: block; padding: 16px; }
 
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .back-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 22px;
-      color: var(--primary-color, #03a9f4);
-      padding: 4px 8px;
-      border-radius: 8px;
-      line-height: 1;
-    }
     h2 { margin: 0; font-size: 20px; font-weight: 600; }
 
     .section {
@@ -171,6 +155,28 @@ export class AlarmForm extends LitElement {
       background: var(--secondary-background-color, #f9f9f9);
       color: var(--primary-text-color);
       font-size: 15px;
+      min-width: 0;
+    }
+
+    /* iOS Safari renders the time value via this pseudo-element with its own
+       padding, which can overflow the rounded border on narrow screens.
+       Normalize it so the value sits inside the input's own padding. */
+    input[type=time] {
+      -webkit-appearance: none;
+      appearance: none;
+      font-family: inherit;
+      line-height: 1.2;
+      min-height: 40px;
+      text-align: left;
+    }
+    input[type=time]::-webkit-date-and-time-value {
+      text-align: left;
+      padding: 0;
+      margin: 0;
+      min-height: 0;
+    }
+    input[type=time]::-webkit-calendar-picker-indicator {
+      margin-left: 8px;
     }
 
     .row {
@@ -368,20 +374,11 @@ export class AlarmForm extends LitElement {
     }
   }
 
-  private _back() {
-    this.dispatchEvent(new CustomEvent("cancel", { bubbles: true, composed: true }));
-  }
-
   render() {
     const isEdit = !!this.alarm;
     const timeValue = `${zeroPad(this._hour)}:${zeroPad(this._minute)}`;
 
     return html`
-      <div class="header">
-        <button class="back-btn" @click=${this._back}>‹</button>
-        <h2>${isEdit ? "Edit Alarm" : "New Alarm"}</h2>
-      </div>
-
       <!-- Alarm Details -->
       <div class="section">
         <div class="section-title">Alarm Details</div>

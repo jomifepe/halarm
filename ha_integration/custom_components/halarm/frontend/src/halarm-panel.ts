@@ -60,6 +60,7 @@ function parseAlarm(raw: Record<string, unknown>, states: Record<string, HAState
 export class HalarmPanel extends LitElement {
   @property({ attribute: false }) hass!: HassObject;
   @property({ attribute: false }) panel: unknown;
+  @property({ type: Boolean }) narrow = false;
 
   @state() private _view: View = "list";
   @state() private _alarms: Alarm[] = [];
@@ -70,14 +71,83 @@ export class HalarmPanel extends LitElement {
   static styles = css`
     :host {
       display: block;
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 16px;
+      height: 100%;
       font-family: var(--paper-font-body1_-_font-family, sans-serif);
       color: var(--primary-text-color);
       box-sizing: border-box;
     }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      height: var(--header-height, 56px);
+      padding: 0 4px;
+      background: var(--app-header-background-color, var(--primary-color));
+      color: var(--app-header-text-color, #fff);
+      box-sizing: border-box;
+      font-weight: 400;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .toolbar .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      line-height: 1;
+      margin: 0 4px;
+    }
+    .toolbar .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .toolbar .icon-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .toolbar .title {
+      flex: 1;
+      font-size: 20px;
+      font-weight: 400;
+      margin: 0 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
   `;
+
+  private _toggleMenu() {
+    this.dispatchEvent(
+      new CustomEvent("hass-toggle-menu", { bubbles: true, composed: true })
+    );
+  }
+
+  private _backToList() {
+    this._view = "list";
+    this._error = "";
+  }
+
+  private get _title(): string {
+    if (this._view === "create") return "New Alarm";
+    if (typeof this._view === "object" && "edit" in this._view) return "Edit Alarm";
+    return "HAlarm";
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -192,30 +262,65 @@ export class HalarmPanel extends LitElement {
   }
 
   render() {
-    if (this._view === "create" || (typeof this._view === "object" && "edit" in this._view)) {
-      return html`
-        <alarm-form
-          .hass=${this.hass}
-          .alarm=${typeof this._view === "object" ? this._view.edit : null}
-          .devices=${this._devices}
-          @cancel=${() => { this._view = "list"; }}
-          @saved=${this._handleSaved}
-        ></alarm-form>
-      `;
-    }
+    const inSubView =
+      this._view === "create" ||
+      (typeof this._view === "object" && "edit" in this._view);
+
+    const menuButton = html`
+      <button
+        class="icon-btn"
+        aria-label="Open menu"
+        @click=${this._toggleMenu}
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" />
+        </svg>
+      </button>
+    `;
+
+    const backButton = html`
+      <button
+        class="icon-btn"
+        aria-label="Back"
+        @click=${this._backToList}
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+      </button>
+    `;
 
     return html`
-      <alarm-list
-        .hass=${this.hass}
-        .alarms=${this._alarms}
-        .loading=${this._loading}
-        .error=${this._error}
-        @add=${() => { this._view = "create"; this._error = ""; }}
-        @edit=${(e: CustomEvent) => { this._view = { edit: e.detail }; this._error = ""; }}
-        @delete=${this._handleDelete}
-        @toggle=${this._handleToggle}
-        @shift=${this._handleShift}
-      ></alarm-list>
+      <div class="toolbar">
+        ${inSubView ? backButton : menuButton}
+        <div class="title">${this._title}</div>
+      </div>
+
+      <div class="content">
+        ${inSubView
+          ? html`
+              <alarm-form
+                .hass=${this.hass}
+                .alarm=${typeof this._view === "object" ? this._view.edit : null}
+                .devices=${this._devices}
+                @cancel=${this._backToList}
+                @saved=${this._handleSaved}
+              ></alarm-form>
+            `
+          : html`
+              <alarm-list
+                .hass=${this.hass}
+                .alarms=${this._alarms}
+                .loading=${this._loading}
+                .error=${this._error}
+                @add=${() => { this._view = "create"; this._error = ""; }}
+                @edit=${(e: CustomEvent) => { this._view = { edit: e.detail }; this._error = ""; }}
+                @delete=${this._handleDelete}
+                @toggle=${this._handleToggle}
+                @shift=${this._handleShift}
+              ></alarm-list>
+            `}
+      </div>
     `;
   }
 }

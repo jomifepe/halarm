@@ -35,10 +35,9 @@ export class AlarmList extends LitElement {
     .header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       margin-bottom: 16px;
     }
-    h2 { margin: 0; font-size: 20px; font-weight: 600; }
 
     .header-actions { display: flex; gap: 8px; }
 
@@ -200,7 +199,6 @@ export class AlarmList extends LitElement {
   render() {
     return html`
       <div class="header">
-        <h2>Alarms</h2>
         <div class="header-actions">
           <button class="icon-btn" @click=${() => { this._shiftOpen = !this._shiftOpen; }}>Shift all</button>
           <button class="add-btn" @click=${this._onAdd}>+ Add</button>
